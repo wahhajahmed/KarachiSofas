@@ -67,11 +67,11 @@ export default function LoginPage() {
         .from('users')
         .select('*')
         .eq('id', authData.user.id)
-        .single();
+        .maybeSingle();
 
-      if (userError) {
+      if (userError || !userData) {
         // User exists in auth but not in users table - create record
-        const { data: newUserData } = await supabase
+        const { data: newUserData, error: insertError } = await supabase
           .from('users')
           .insert({
             id: authData.user.id,
@@ -81,7 +81,13 @@ export default function LoginPage() {
             role: 'user',
           })
           .select()
-          .single();
+          .maybeSingle();
+        
+        if (insertError && insertError.code !== '23505') {
+          console.error('Error creating user record:', insertError);
+          setError('Login successful but failed to create user profile. Please try again or contact support.');
+          return;
+        }
         
         setUser(newUserData || authData.user);
       } else {

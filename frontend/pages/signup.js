@@ -120,8 +120,15 @@ export default function SignupPage() {
             role: 'user',
           });
 
-        if (dbError && dbError.code !== '23505') { // Ignore duplicate key error
-          console.error('Error saving user data:', dbError);
+        if (dbError) {
+          if (dbError.code === '23505') {
+            // Duplicate key error - user already exists, which is fine
+            console.log('User record already exists');
+          } else {
+            console.error('Error saving user data:', dbError);
+            setError('Account created but failed to save user details. Please contact support.');
+            return;
+          }
         }
       }
 

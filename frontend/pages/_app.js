@@ -72,7 +72,7 @@ function MyApp({ Component, pageProps }) {
           .from('users')
           .select('*')
           .eq('id', session.user.id)
-          .single()
+          .maybeSingle()
           .then(({ data }) => {
             if (data) {
               setUser(data);
@@ -92,7 +92,7 @@ function MyApp({ Component, pageProps }) {
           .from('users')
           .select('*')
           .eq('id', session.user.id)
-          .single()
+          .maybeSingle()
           .then(({ data }) => {
             if (data) {
               setUser(data);
@@ -182,6 +182,32 @@ function MyApp({ Component, pageProps }) {
     }
 
     try {
+      // Ensure user exists in users table before adding to cart
+      const { data: userExists } = await supabase
+        .from('users')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!userExists) {
+        // Create user record if it doesn't exist
+        const { error: userError } = await supabase
+          .from('users')
+          .insert({
+            id: user.id,
+            email: user.email,
+            name: user.name || user.user_metadata?.name || '',
+            phone: user.phone || user.user_metadata?.phone || '',
+            role: 'user',
+          });
+
+        if (userError && userError.code !== '23505') {
+          console.error('Error creating user record:', userError);
+          alert('Failed to add item. Please logout and login again.');
+          return;
+        }
+      }
+
       // Check if item already exists in cart
       const { data: existing } = await supabase
         .from('cart_items')
