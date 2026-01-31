@@ -351,7 +351,7 @@ export default function CheckoutPage() {
 
         <div className="flex items-center justify-between border-t border-primary/40 pt-4 mt-4 text-base">
           <span className="font-semibold">Total</span>
-          <span className="font-bold text-primary text-lg">Rs {total.toLocaleString()}</span>
+          <span className="font-bold text-primary text-lg">Rs {grandTotal.toLocaleString()}</span>
         </div>
 
         {message && (
