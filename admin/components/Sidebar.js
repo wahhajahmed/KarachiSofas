@@ -13,20 +13,20 @@ export default function Sidebar() {
   const isActive = (path) => router.pathname === path;
 
   return (
-    <aside className="w-56 bg-black/70 border-r border-primary/30 min-h-screen py-6 px-4">
-      <div className="flex items-center space-x-2 mb-8">
-        <Image src={Logo} alt="AUF Logo" className="h-8 w-auto" />
+    <aside className="w-64 bg-black/80 border-r border-primary/30 min-h-screen py-8 px-6">
+      <div className="flex items-center space-x-3 mb-10">
+        <Image src={Logo} alt="AUF Logo" className="h-10 w-auto" />
         <div>
-          <p className="text-sm font-bold tracking-widest text-primary">AUF</p>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400">Admin Panel</p>
+          <p className="text-base font-bold tracking-widest text-primary">AUF</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Admin Panel</p>
         </div>
       </div>
       {adminUser && (
-        <div className="mb-4 text-[11px] text-gray-200">
+        <div className="mb-6 text-sm text-gray-200 p-3 bg-primary/10 rounded-lg border border-primary/20">
           <p className="font-semibold text-primary">{adminUser.name || adminUser.email}</p>
         </div>
       )}
-      <nav className="space-y-1 text-sm">
+      <nav className="space-y-2 text-base">
         <Link
           href="/"
           className={
@@ -59,14 +59,14 @@ export default function Sidebar() {
         >
           <span>Orders</span>
           {pendingCount > 0 && (
-            <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white px-1.5 min-w-[18px]">
+            <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white px-2 py-1 min-w-[24px]">
               {pendingCount}
             </span>
           )}
         </Link>
       </nav>
-      <div className="mt-8 text-[11px] text-gray-300 space-y-1">
-        <p className="text-[11px] font-semibold text-primary mb-1">Account</p>
+      <div className="mt-10 text-sm text-gray-300 space-y-2 p-3 bg-secondary/40 rounded-lg border border-primary/20">
+        <p className="text-sm font-semibold text-primary mb-2">Account</p>
         {adminUser ? (
           <>
             <p className="truncate">

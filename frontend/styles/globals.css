@@ -4,17 +4,39 @@
 
 body {
   @apply bg-secondary text-white min-h-screen;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 a {
-  @apply text-primary hover:text-primary-dark;
+  @apply text-primary hover:text-primary-dark transition-colors duration-200;
 }
 
 .btn-primary {
-  @apply bg-primary text-secondary px-4 py-2 rounded-md font-semibold hover:bg-primary-dark transition;
+  @apply bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-200 shadow-md hover:shadow-lg text-base;
+}
+
+.btn-secondary {
+  @apply bg-secondary border-2 border-primary text-primary px-6 py-3 rounded-lg font-semibold hover:bg-primary hover:text-secondary transition-all duration-200 text-base;
 }
 
 .container-max {
-  @apply max-w-6xl mx-auto px-4;
+  @apply max-w-7xl mx-auto px-6 sm:px-8 lg:px-12;
+}
+
+.card {
+  @apply bg-secondary/60 border border-primary/40 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300;
+}
+
+.input-field {
+  @apply w-full px-4 py-3 bg-secondary border border-primary/40 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-base;
+}
+
+.section-title {
+  @apply text-3xl md:text-4xl font-bold text-primary mb-4;
+}
+
+.section-subtitle {
+  @apply text-xl md:text-2xl font-semibold text-primary mb-6;
 }

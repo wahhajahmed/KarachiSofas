@@ -66,50 +66,52 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-secondary/70 border border-primary/40 rounded-xl p-6 shadow-xl">
-      <h1 className="text-xl font-semibold text-primary mb-4">Login to AUF</h1>
-      {error && <p className="text-xs text-red-300 mb-2">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-3 text-sm">
+    <div className="max-w-lg mx-auto card p-8 shadow-2xl">
+      <h1 className="text-3xl font-bold text-primary mb-6">Login to AUF</h1>
+      {error && <p className="text-sm text-red-300 mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
+      <form onSubmit={handleSubmit} className="space-y-5 text-base">
         <div>
-          <label className="block mb-1 text-gray-200">Email</label>
+          <label className="block mb-2 text-gray-200 font-medium">Email</label>
           <input
             type="email"
-            className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
+            className="input-field"
+            placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div>
-          <label className="block mb-1 text-gray-200">Password</label>
-          <div className="flex items-center space-x-2">
+          <label className="block mb-2 text-gray-200 font-medium">Password</label>
+          <div className="flex items-center space-x-3">
             <input
               type={showPassword ? 'text' : 'password'}
-              className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
+              className="input-field"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="text-[11px] text-gray-300 hover:text-primary"
+              className="text-sm text-gray-300 hover:text-primary whitespace-nowrap transition-colors"
             >
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
-          <p className="mt-1 text-[11px] text-gray-400">
+          <p className="mt-2 text-sm text-gray-400">
             Password must be at least 8 characters.
           </p>
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full btn-primary mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full btn-primary mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? 'Logging in…' : 'Login'}
         </button>
-        <div className="flex items-center justify-between mt-2 text-[11px] text-gray-300">
-          <a href="/signup" className="text-primary hover:text-primary-dark">Sign up</a>
-          <a href="/forgot-password" className="text-primary hover:text-primary-dark">Forgot password?</a>
+        <div className="flex items-center justify-between mt-4 text-sm text-gray-300">
+          <a href="/signup" className="text-primary hover:text-primary-dark transition-colors">Create Account</a>
+          <a href="/forgot-password" className="text-primary hover:text-primary-dark transition-colors">Forgot password?</a>
         </div>
       </form>
     </div>

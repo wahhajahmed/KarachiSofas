@@ -2,72 +2,77 @@ export default function CartSummary({ items, onRemove, onIncrease, onDecrease })
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   if (!items.length) {
-    return <p className="text-gray-300 text-sm">Your cart is empty.</p>;
+    return (
+      <div className="card p-12 text-center">
+        <p className="text-gray-300 text-xl mb-2">Your cart is empty.</p>
+        <p className="text-gray-400 text-base">Add some products to get started!</p>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {items.map((item) => (
         <div
           key={item.id}
-          className="flex items-center justify-between bg-secondary/60 border border-primary/30 rounded-lg p-3 text-sm space-x-4"
+          className="card flex items-center justify-between p-5 space-x-6"
         >
-          <div className="flex items-center space-x-3 flex-1">
+          <div className="flex items-center space-x-4 flex-1">
             {item.image_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={item.image_url}
                 alt={item.name}
-                className="h-14 w-14 object-cover rounded-md border border-primary/40"
+                className="h-20 w-20 object-cover rounded-lg border border-primary/40"
               />
             ) : (
-              <div className="h-14 w-14 rounded-md border border-primary/20 flex items-center justify-center text-[10px] text-gray-400">
+              <div className="h-20 w-20 rounded-lg border border-primary/20 flex items-center justify-center text-xs text-gray-400">
                 No image
               </div>
             )}
             <div>
-              <p className="font-semibold">{item.name}</p>
-              <p className="text-xs text-gray-300">
+              <p className="font-bold text-lg">{item.name}</p>
+              <p className="text-sm text-gray-300">
                 Rs {Number(item.price).toLocaleString()} each
               </p>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center border border-primary/40 rounded-md overflow-hidden">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center border-2 border-primary/40 rounded-lg overflow-hidden">
               <button
                 type="button"
                 onClick={() => onDecrease?.(item.id)}
-                className="px-2 py-1 text-xs bg-black/40 hover:bg-black/60"
+                className="px-3 py-2 text-base bg-black/40 hover:bg-primary hover:text-secondary transition-colors"
               >
-                -
+                −
               </button>
-              <span className="px-3 py-1 text-xs min-w-[2rem] text-center">
+              <span className="px-4 py-2 text-base min-w-[3rem] text-center font-semibold">
                 {item.quantity}
               </span>
               <button
                 type="button"
                 onClick={() => onIncrease?.(item.id)}
-                className="px-2 py-1 text-xs bg-black/40 hover:bg-black/60"
+                className="px-3 py-2 text-base bg-black/40 hover:bg-primary hover:text-secondary transition-colors"
               >
                 +
               </button>
             </div>
-            <p className="font-bold text-primary min-w-[6rem] text-right">
+            <p className="font-bold text-primary text-xl min-w-[8rem] text-right">
               Rs {(item.price * item.quantity).toLocaleString()}
             </p>
             <button
               type="button"
               onClick={() => onRemove(item.id)}
-              className="text-xs text-red-400 hover:text-red-300"
+              className="text-sm text-red-400 hover:text-red-300 transition-colors px-3"
             >
               Remove
             </button>
           </div>
         </div>
       ))}
-      <div className="flex items-center justify-between border-t border-primary/40 pt-3 mt-3 text-sm">
-        <span className="font-semibold">Total</span>
-        <span className="font-bold text-primary">Rs {total.toLocaleString()}</span>
+      <div className="flex items-center justify-between border-t-2 border-primary/40 pt-5 mt-4 text-lg">
+        <span className="font-bold text-xl">Total Amount</span>
+        <span className="font-bold text-primary text-2xl">Rs {total.toLocaleString()}</span>
       </div>
     </div>
   );

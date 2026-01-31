@@ -8,8 +8,8 @@ export default function CartPage() {
   const hasItems = cart.length > 0;
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-primary mb-4">Your Cart</h1>
+    <div className="space-y-8 py-6">
+      <h1 className="text-4xl font-bold text-primary mb-6">Your Shopping Cart</h1>
       <CartSummary
         items={cart}
         onRemove={removeFromCart}
@@ -19,7 +19,7 @@ export default function CartPage() {
       {hasItems && (
         <div className="flex justify-end">
           <Link href="/checkout" className="btn-primary">
-            Go to Checkout
+            Proceed to Checkout
           </Link>
         </div>
       )}
