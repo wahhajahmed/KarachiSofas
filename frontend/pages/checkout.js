@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useCart, useAuth } from './_app';
 import CartSummary from '../components/CartSummary';
 import { supabase } from '../lib/supabaseClient';
@@ -82,6 +83,27 @@ export default function CheckoutPage() {
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const grandTotal = total + deliveryCharges;
+
+  // Show loading state while checking user
+  if (user === null) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-xl text-gray-400">Loading...</p>
+      </div>
+    );
+  }
+
+  // Show empty cart message if no items
+  if (!cart || cart.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
+        <p className="text-2xl text-gray-400">Your cart is empty</p>
+        <Link href="/" className="btn-primary">
+          Continue Shopping
+        </Link>
+      </div>
+    );
+  }
 
   async function handlePlaceOrder(e) {
     e.preventDefault();
