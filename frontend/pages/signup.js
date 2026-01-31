@@ -109,59 +109,71 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-secondary/70 border border-primary/40 rounded-xl p-6 shadow-xl">
-      <h1 className="text-xl font-semibold text-primary mb-4">Create Your AUF Account</h1>
-      {error && <p className="text-xs text-red-300 mb-2">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-3 text-sm">
+    <div className="max-w-lg mx-auto card p-8 shadow-2xl">
+      <h1 className="text-3xl font-bold text-primary mb-6">Create Your AUF Account</h1>
+      {error && <p className="text-sm text-red-300 mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
+      {success && (
+        <div className="text-sm text-green-300 mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+          ✓ Account created successfully! Redirecting to login page...
+        </div>
+      )}
+      <form onSubmit={handleSubmit} className="space-y-5 text-base">
         <div>
-          <label className="block mb-1 text-gray-200">Full Name</label>
+          <label className="block mb-2 text-gray-200 font-medium">Full Name</label>
           <input
             type="text"
-            className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
+            className="input-field"
+            placeholder="Your full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            disabled={success}
           />
         </div>
         <div>
-          <label className="block mb-1 text-gray-200">Email</label>
+          <label className="block mb-2 text-gray-200 font-medium">Email</label>
           <input
             type="email"
-            className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
+            className="input-field"
+            placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={success}
           />
         </div>
         <div>
-          <label className="block mb-1 text-gray-200">Password</label>
-          <div className="flex items-center space-x-2">
+          <label className="block mb-2 text-gray-200 font-medium">Password</label>
+          <div className="flex items-center space-x-3">
             <input
               type={showPassword ? 'text' : 'password'}
-              className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
+              className="input-field"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={success}
             />
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="text-[11px] text-gray-300 hover:text-primary"
+              className="text-sm text-gray-300 hover:text-primary whitespace-nowrap transition-colors"
+              disabled={success}
             >
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
-          <p className="mt-1 text-[11px] text-gray-400">
+          <p className="mt-2 text-sm text-gray-400">
             Password must be at least 8 characters.
           </p>
         </div>
         <button
           type="submit"
-          disabled={loading}
-          className="w-full btn-primary mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          disabled={loading || success}
+          className="w-full btn-primary mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {loading ? 'Creating account…' : 'Sign Up'}
+          {loading ? 'Creating account…' : success ? 'Account Created!' : 'Sign Up'}
         </button>
-        <p className="text-[11px] text-gray-300 mt-2">
+        <p className="text-sm text-gray-300 mt-4 text-center">
           Already have an account?{' '}
-          <a href="/login" className="text-primary hover:text-primary-dark">Login</a>
+          <a href="/login" className="text-primary hover:text-primary-dark transition-colors font-semibold">Login</a>
         </p>
       </form>
     </div>
