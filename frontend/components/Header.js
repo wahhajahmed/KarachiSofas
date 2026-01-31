@@ -139,91 +139,97 @@ export default function Header() {
 
         {/* Mobile Navigation Menu */}
         <div
-          className={`lg:hidden fixed inset-0 bg-secondary z-20 transition-all duration-300 ${
+          className={`lg:hidden fixed inset-0 bg-secondary/98 z-20 transition-all duration-300 ${
             mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
           }`}
-          onClick={closeMobileMenu}
         >
+          {/* Close button */}
+          <button
+            onClick={closeMobileMenu}
+            className="absolute top-6 right-6 text-primary hover:text-primary-dark"
+            aria-label="Close menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
           <nav
-            className={`flex flex-col items-center justify-center h-full space-y-6 text-lg font-medium transition-transform duration-300 px-6 ${
+            className={`flex flex-col items-center justify-center h-full space-y-8 px-8 transition-transform duration-300 ${
               mobileMenuOpen ? 'scale-100' : 'scale-95'
             }`}
-            onClick={(e) => e.stopPropagation()}
           >
+            {/* Logo Section */}
+            <div className="text-center mb-4">
+              <div className="text-4xl font-extrabold tracking-widest text-primary">AUF</div>
+              <div className="text-xs uppercase tracking-[0.3em] text-gray-400 mt-1">
+                Ali Usman Fatima
+              </div>
+            </div>
+
+            {/* User Welcome */}
+            {user && (
+              <div className="text-center pb-4 border-b border-primary/30 w-full">
+                <span className="text-base text-primary font-medium">Welcome, {user.name || user.email}</span>
+              </div>
+            )}
+
+            {/* Navigation Links */}
             <Link
               href="/"
               onClick={closeMobileMenu}
-              className={
-                isActive('/')
-                  ? 'text-primary border-b-2 border-primary pb-1 transition-colors'
-                  : 'text-gray-200 hover:text-primary transition-colors'
-              }
+              className="text-xl text-gray-200 hover:text-primary transition-colors font-medium"
             >
               Home
             </Link>
+            
             <Link
               href="/cart"
               onClick={(e) => {
                 handleCartClick(e);
                 closeMobileMenu();
               }}
-              className={
-                isActive('/cart')
-                  ? 'text-primary border-b-2 border-primary pb-1 flex items-center transition-colors'
-                  : 'text-gray-200 hover:text-primary flex items-center transition-colors'
-              }
+              className="text-xl text-gray-200 hover:text-primary transition-colors font-medium flex items-center gap-3"
             >
               <span>Cart</span>
               {user && cartCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white px-2.5 py-1 min-w-[28px]">
+                <span className="inline-flex items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white px-3 py-1 min-w-[32px]">
                   {cartCount}
                 </span>
               )}
             </Link>
+            
             <Link
               href="/checkout"
               onClick={(e) => {
                 handleCheckoutClick(e);
                 closeMobileMenu();
               }}
-              className={
-                isActive('/checkout')
-                  ? 'text-primary border-b-2 border-primary pb-1 transition-colors'
-                  : 'text-gray-200 hover:text-primary transition-colors'
-              }
+              className="text-xl text-gray-200 hover:text-primary transition-colors font-medium"
             >
               Checkout
             </Link>
+
+            {/* Auth Section */}
             {user ? (
-              <>
-                <div className="text-center border-t border-primary/30 pt-6 w-full">
-                  <span className="text-sm text-primary font-medium">Welcome, {user.name || user.email}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    auth.logout?.();
-                    closeMobileMenu();
-                  }}
-                  className="text-gray-200 hover:text-primary transition-colors bg-secondary/60 border border-primary/40 rounded-lg px-6 py-3"
-                >
-                  Logout
-                </button>
-              </>
+              <button
+                type="button"
+                onClick={() => {
+                  auth.logout?.();
+                  closeMobileMenu();
+                }}
+                className="mt-8 bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-secondary transition-all px-8 py-3 rounded-lg font-semibold text-lg"
+              >
+                Logout
+              </button>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  onClick={closeMobileMenu}
-                  className={
-                    isAuthActive
-                      ? 'text-primary border-b-2 border-primary pb-1 transition-colors'
-                      : 'text-gray-200 hover:text-primary transition-colors'
-                  }
-                >
-                  Account
-                </Link>
-              </>
+              <Link
+                href="/login"
+                onClick={closeMobileMenu}
+                className="mt-8 bg-primary text-secondary hover:bg-primary-dark transition-all px-8 py-3 rounded-lg font-semibold text-lg"
+              >
+                Login / Sign Up
+              </Link>
             )}
           </nav>
         </div>
