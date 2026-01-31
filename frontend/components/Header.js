@@ -64,12 +64,14 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden flex flex-col space-y-1.5 p-2 z-[60] relative"
+          className={`lg:hidden flex flex-col space-y-1.5 p-2 z-[60] relative transition-opacity duration-300 ${
+            mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
           aria-label="Toggle menu"
         >
-          <span className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-          <span className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
-          <span className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          <span className="block w-6 h-0.5 bg-primary"></span>
+          <span className="block w-6 h-0.5 bg-primary"></span>
+          <span className="block w-6 h-0.5 bg-primary"></span>
         </button>
 
         {/* Desktop Navigation */}
