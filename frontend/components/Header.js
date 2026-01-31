@@ -64,7 +64,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden flex flex-col space-y-1.5 p-2 z-30"
+          className="lg:hidden flex flex-col space-y-1.5 p-2 z-50 relative"
           aria-label="Toggle menu"
         >
           <span className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
@@ -139,7 +139,7 @@ export default function Header() {
 
         {/* Mobile Navigation Menu */}
         <div
-          className={`lg:hidden fixed inset-0 bg-secondary/98 z-20 transition-all duration-300 ${
+          className={`lg:hidden fixed inset-0 bg-[#0a0a0a] z-50 transition-all duration-300 ${
             mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
           }`}
         >
