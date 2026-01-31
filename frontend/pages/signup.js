@@ -109,15 +109,15 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto card p-8 shadow-2xl">
-      <h1 className="text-3xl font-bold text-primary mb-6">Create Your AUF Account</h1>
-      {error && <p className="text-sm text-red-300 mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
+    <div className="w-full max-w-2xl mx-auto card p-10 shadow-2xl">
+      <h1 className="text-4xl font-bold text-primary mb-8">Create Your AUF Account</h1>
+      {error && <p className="text-base text-red-300 mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
       {success && (
-        <div className="text-sm text-green-300 mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+        <div className="text-base text-green-300 mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
           ✓ Account created successfully! Redirecting to login page...
         </div>
       )}
-      <form onSubmit={handleSubmit} className="space-y-5 text-base">
+      <form onSubmit={handleSubmit} className="space-y-6 text-base">
         <div>
           <label className="block mb-2 text-gray-200 font-medium">Full Name</label>
           <input

@@ -66,10 +66,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto card p-8 shadow-2xl">
-      <h1 className="text-3xl font-bold text-primary mb-6">Login to AUF</h1>
-      {error && <p className="text-sm text-red-300 mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-5 text-base">
+    <div className="w-full max-w-2xl mx-auto card p-10 shadow-2xl">
+      <h1 className="text-4xl font-bold text-primary mb-8">Login to AUF</h1>
+      {error && <p className="text-base text-red-300 mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
+      <form onSubmit={handleSubmit} className="space-y-6 text-base">
         <div>
           <label className="block mb-2 text-gray-200 font-medium">Email</label>
           <input
