@@ -102,16 +102,14 @@ export default function LoginPage() {
       }
 
       // If the user came from an Add to Cart action, automatically add that item now
-      let hasPendingItem = false;
       if (typeof window !== 'undefined') {
         const pendingItemRaw = window.localStorage.getItem('auf-pending-cart-item');
         if (pendingItemRaw) {
-          hasPendingItem = true;
           try {
             const pendingItem = JSON.parse(pendingItemRaw);
             if (pendingItem && pendingItem.id) {
-              // Add to cart first, then redirect
-              await addToCart(pendingItem);
+              // Add to cart silently (no alerts) in background, don't wait
+              addToCart(pendingItem, true); // true = silent mode
             }
           } catch (err) {
             console.error('Error adding pending cart item:', err);
@@ -120,12 +118,7 @@ export default function LoginPage() {
         }
       }
 
-      // Small delay to ensure cart state updates before redirect
-      if (hasPendingItem) {
-        await new Promise(resolve => setTimeout(resolve, 300));
-      }
-
-      // Always redirect to home page after login
+      // Immediately redirect to home page after login
       router.push('/');
     } finally {
       setLoading(false);

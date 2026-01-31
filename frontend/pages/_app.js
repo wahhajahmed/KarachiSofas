@@ -171,7 +171,8 @@ function MyApp({ Component, pageProps }) {
   };
 
   // Add item to cart (database + state)
-  const addToCart = async (product) => {
+  // silent parameter: if true, don't show alerts
+  const addToCart = async (product, silent = false) => {
     if (!user) {
       // Save pending item and redirect to login
       if (typeof window !== 'undefined') {
@@ -217,8 +218,10 @@ function MyApp({ Component, pageProps }) {
         .maybeSingle();
 
       if (existing) {
-        // Item already in cart - show alert
-        alert('This item is already in your cart!');
+        // Item already in cart - show alert only if not silent
+        if (!silent) {
+          alert('This item is already in your cart!');
+        }
         return;
       }
 
@@ -236,13 +239,16 @@ function MyApp({ Component, pageProps }) {
         console.error('Error adding to cart:', error);
         console.error('Error details:', JSON.stringify(error, null, 2));
         
-        // Check if it's a foreign key error
-        if (error.code === '23503') {
-          alert('Database error: User record not found. Please contact support.');
-        } else if (error.message) {
-          alert(`Failed to add item: ${error.message}`);
-        } else {
-          alert('Failed to add item to cart. Please try again.');
+        // Only show alerts if not silent
+        if (!silent) {
+          // Check if it's a foreign key error
+          if (error.code === '23503') {
+            alert('Database error: User record not found. Please contact support.');
+          } else if (error.message) {
+            alert(`Failed to add item: ${error.message}`);
+          } else {
+            alert('Failed to add item to cart. Please try again.');
+          }
         }
         return;
       }
@@ -251,7 +257,11 @@ function MyApp({ Component, pageProps }) {
       
       // Update local state
       dispatch({ type: 'ADD', payload: { ...product, quantity: 1 } });
-      alert('Item added to cart successfully!');
+      
+      // Only show success alert if not silent
+      if (!silent) {
+        alert('Item added to cart successfully!');
+      }
     } catch (err) {
       console.error('Error in addToCart:', err);
       alert('Something went wrong. Please try again.');
