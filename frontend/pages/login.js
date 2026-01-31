@@ -102,6 +102,7 @@ export default function LoginPage() {
       }
 
       // If the user came from an Add to Cart action, automatically add that item now
+      let shouldRedirectToCart = false;
       if (typeof window !== 'undefined') {
         const pendingItemRaw = window.localStorage.getItem('auf-pending-cart-item');
         if (pendingItemRaw) {
@@ -109,6 +110,7 @@ export default function LoginPage() {
             const pendingItem = JSON.parse(pendingItemRaw);
             if (pendingItem && pendingItem.id) {
               addToCart(pendingItem);
+              shouldRedirectToCart = true;
             }
           } catch {
             // ignore JSON errors
@@ -117,7 +119,12 @@ export default function LoginPage() {
         }
       }
 
-      router.push('/cart');
+      // Redirect to cart only if user came from add to cart, otherwise home
+      if (shouldRedirectToCart) {
+        router.push('/cart');
+      } else {
+        router.push('/');
+      }
     } finally {
       setLoading(false);
     }
