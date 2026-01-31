@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import { createContext, useContext, useEffect, useReducer, useState } from 'react';
+import { useRouter } from 'next/router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -49,8 +50,12 @@ export function useAuth() {
 }
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
   const [cart, dispatch] = useReducer(cartReducer, []);
   const [user, setUser] = useState(null);
+  
+  // Check if current page is login/signup/forgot-password
+  const isAuthPage = ['/login', '/signup', '/forgot-password'].includes(router.pathname);
 
   // Persist cart to localStorage for simple UX
   useEffect(() => {
@@ -107,11 +112,11 @@ function MyApp({ Component, pageProps }) {
     <AuthContext.Provider value={{ user, setUser: setAndPersistUser, logout: () => setAndPersistUser(null) }}>
       <CartContext.Provider value={value}>
         <div className="min-h-screen flex flex-col bg-gradient-to-b from-black via-secondary to-black">
-          <Header />
-          <main className="flex-1 container-max py-8">
+          {!isAuthPage && <Header />}
+          <main className={isAuthPage ? "flex-1 flex items-center justify-center py-12" : "flex-1 container-max py-8"}>
             <Component {...pageProps} />
           </main>
-          <Footer />
+          {!isAuthPage && <Footer />}
         </div>
       </CartContext.Provider>
     </AuthContext.Provider>
