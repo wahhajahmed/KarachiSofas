@@ -17,6 +17,14 @@ a {
   @apply bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-200 shadow-md hover:shadow-lg text-base;
 }
 
+.btn-primary:focus {
+  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-secondary;
+}
+
+.btn-primary:active {
+  @apply scale-95;
+}
+
 .btn-secondary {
   @apply bg-secondary border-2 border-primary text-primary px-6 py-3 rounded-lg font-semibold hover:bg-primary hover:text-secondary transition-all duration-200 text-base;
 }
