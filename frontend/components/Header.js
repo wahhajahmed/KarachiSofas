@@ -33,49 +33,50 @@ export default function Header() {
 
   return (
     <header className="bg-secondary/95 border-b border-primary/40 sticky top-0 z-40 backdrop-blur-lg shadow-lg">
-      <div className="container-max flex items-center justify-between py-5">
-        <div className="flex items-center space-x-8">
-          <Link href="/" onClick={closeMobileMenu}>
-            <div className="flex items-center space-x-4 cursor-pointer group">
-              {/* AUF Logo */}
-              <Image
-                src="/logo.png"
-                alt="AUF Karachi Sofas Logo"
-                width={56}
-                height={56}
-                className="h-14 w-auto drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
-              />
-              <div>
-                <div className="text-3xl font-extrabold tracking-widest text-primary">AUF</div>
-                <div className="text-sm uppercase tracking-[0.25em] text-gray-300">
-                  Ali Usman Fatima
+      <div className="container-max py-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-8">
+            <Link href="/" onClick={closeMobileMenu}>
+              <div className="flex items-center space-x-4 cursor-pointer group">
+                {/* AUF Logo */}
+                <Image
+                  src="/logo.png"
+                  alt="AUF Karachi Sofas Logo"
+                  width={56}
+                  height={56}
+                  className="h-14 w-auto drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
+                />
+                <div>
+                  <div className="text-3xl font-extrabold tracking-widest text-primary">AUF</div>
+                  <div className="text-sm uppercase tracking-[0.25em] text-gray-300">
+                    Ali Usman Fatima
+                  </div>
                 </div>
               </div>
-            </div>
-          </Link>
-          {user && (
-            <span className="text-base text-primary font-medium hidden lg:inline">
-              Welcome, {user.name || user.email}
-            </span>
-          )}
-        </div>
+            </Link>
+            {user && (
+              <span className="text-base text-primary font-medium hidden lg:inline">
+                Welcome, {user.name || user.email}
+              </span>
+            )}
+          </div>
 
-        {/* Hamburger Button - Mobile Only */}
-        <button
-          type="button"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`lg:hidden flex flex-col space-y-1.5 p-2 z-[60] relative transition-opacity duration-300 ${
-            mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
-          }`}
-          aria-label="Toggle menu"
-        >
-          <span className="block w-6 h-0.5 bg-primary"></span>
-          <span className="block w-6 h-0.5 bg-primary"></span>
-          <span className="block w-6 h-0.5 bg-primary"></span>
-        </button>
+          {/* Hamburger Button - Mobile Only */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`lg:hidden flex flex-col space-y-1.5 p-2 z-[60] relative transition-opacity duration-300 ${
+              mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            }`}
+            aria-label="Toggle menu"
+          >
+            <span className="block w-6 h-0.5 bg-primary"></span>
+            <span className="block w-6 h-0.5 bg-primary"></span>
+            <span className="block w-6 h-0.5 bg-primary"></span>
+          </button>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center space-x-8 text-base font-medium">
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8 text-base font-medium">
           <Link
             href="/"
             className={
@@ -138,6 +139,14 @@ export default function Header() {
             </>
           )}
         </nav>
+        
+        {/* Mobile Welcome Message - Below Logo */}
+        {user && (
+          <div className="lg:hidden w-full text-center mt-3 pt-3 border-t border-primary/30">
+            <span className="text-xs text-primary font-medium">Welcome, {user.name || user.email}</span>
+          </div>
+        )}
+      </div>
 
         {/* Mobile Navigation Menu */}
         <div
@@ -169,13 +178,6 @@ export default function Header() {
                   Ali Usman Fatima
                 </div>
               </div>
-
-              {/* User Welcome */}
-              {user && (
-                <div className="text-center py-3 border-y border-primary/30 w-full max-w-xs mb-2">
-                  <span className="text-sm text-primary font-medium">Welcome, {user.name || user.email}</span>
-                </div>
-              )}
 
               {/* Navigation Links */}
               <Link
@@ -237,7 +239,6 @@ export default function Header() {
             </nav>
           </div>
         </div>
-      </div>
     </header>
   );
 }
