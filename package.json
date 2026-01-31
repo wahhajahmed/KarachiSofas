@@ -1,12 +1,18 @@
 {
   "name": "karachi-sofas-monorepo",
   "private": true,
-  "workspaces": ["frontend", "admin"],
+  "workspaces": [
+    "frontend",
+    "admin"
+  ],
   "scripts": {
     "dev": "npm run dev --workspace frontend",
     "dev:frontend": "npm run dev --workspace frontend",
     "dev:admin": "npm run dev --workspace admin",
     "build": "npm run build --workspace frontend && npm run build --workspace admin",
     "lint": "npm run lint --workspace frontend || true"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.93.3"
   }
 }

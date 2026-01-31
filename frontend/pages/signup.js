@@ -6,6 +6,7 @@ export default function SignupPage() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ export default function SignupPage() {
     setSuccess(false);
     setLoading(true);
     try {
-      if (!name || !email || !password) {
+      if (!name || !email || !phone || !password) {
         setError('Please fill in all fields.');
         return;
       }
@@ -39,64 +40,40 @@ export default function SignupPage() {
 
       const formattedName = formatName(name);
 
-      // Check if a user already exists for this email.
-      // Note: checkout can auto-create a user with password 'placeholder'.
-      const {
-        data: existing,
-        error: existingError,
-      } = await supabase
-        .from('users')
-        .select('*')
-        .eq('email', email)
-        .limit(1)
-        .maybeSingle();
+      // Use Supabase Auth for signup
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: formattedName,
+            phone,
+          }
+        }
+      });
 
-      if (existingError && existingError.code !== 'PGRST116') {
-        // An unexpected error occurred while checking existing user
-        setError(existingError.message || 'Something went wrong. Please try again.');
+      if (authError) {
+        setError(authError.message || 'Failed to create account.');
         return;
       }
 
-      let createdOrUpdatedUser = existing || null;
-
-      if (existing) {
-        if (existing.password === 'placeholder') {
-          // Upgrade a guest/checkout user to a full account
-          const { data: updated, error: updateError } = await supabase
-            .from('users')
-            .update({ name: formattedName, password, role: 'user' })
-            .eq('id', existing.id)
-            .select('*')
-            .single();
-
-          if (updateError) {
-            setError(updateError.message || 'Failed to update existing account.');
-            return;
-          }
-
-          createdOrUpdatedUser = updated;
-        } else {
-          // Proper account already exists with this email
-          setError('Account already exists. Please login instead.');
-          return;
-        }
-      } else {
-        // No existing user – create a brand new account
-        const { data, error: insertError } = await supabase
+      // Store additional user data in users table
+      if (authData.user) {
+        const { error: dbError } = await supabase
           .from('users')
-          .insert({ name: formattedName, email, password, role: 'user' })
-          .select('*')
-          .single();
+          .insert({
+            id: authData.user.id, // Use the auth user ID
+            name: formattedName,
+            email,
+            phone,
+            role: 'user',
+          });
 
-        if (insertError) {
-          setError(insertError.message || 'Failed to create account.');
-          return;
+        if (dbError && dbError.code !== '23505') { // Ignore duplicate key error
+          console.error('Error saving user data:', dbError);
         }
-
-        createdOrUpdatedUser = data;
       }
 
-      // Don't auto-login - show success message and redirect to login
       setSuccess(true);
       
       // Redirect to login page after 2 seconds
@@ -137,6 +114,17 @@ export default function SignupPage() {
             placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={success}
+          />
+        </div>
+        <div>
+          <label className="block mb-2 text-gray-200 font-medium">Phone Number</label>
+          <input
+            type="tel"
+            className="input-field"
+            placeholder="03XX-XXXXXXX"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             disabled={success}
           />
         </div>

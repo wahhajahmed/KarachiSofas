@@ -23,25 +23,42 @@ export default function LoginPage() {
         return;
       }
 
-      const { data, error: fetchError } = await supabase
+      // Use Supabase Auth for login
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) {
+        setError(authError.message || 'Login failed. Please check your credentials.');
+        return;
+      }
+
+      // Fetch user data from users table
+      const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
-        .eq('email', email)
-        .eq('role', 'user')
-        .limit(1)
+        .eq('id', authData.user.id)
         .single();
 
-      if (fetchError || !data) {
-        setError('Account not found. Please sign up first.');
-        return;
+      if (userError) {
+        // User exists in auth but not in users table - create record
+        const { data: newUserData } = await supabase
+          .from('users')
+          .insert({
+            id: authData.user.id,
+            email: authData.user.email,
+            name: authData.user.user_metadata?.name || '',
+            phone: authData.user.user_metadata?.phone || '',
+            role: 'user',
+          })
+          .select()
+          .single();
+        
+        setUser(newUserData || authData.user);
+      } else {
+        setUser(userData);
       }
-
-      if (data.password !== password) {
-        setError('Incorrect password.');
-        return;
-      }
-
-      setUser(data);
 
       // If the user came from an Add to Cart action, automatically add that item now
       if (typeof window !== 'undefined') {

@@ -16,11 +16,12 @@ create table public.products (
   created_at timestamp with time zone default now()
 );
 
+-- Users table - id matches Supabase Auth user ID
 create table public.users (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key, -- This will match auth.users.id from Supabase Auth
   name text,
   email text unique not null,
-  password text not null,
+  phone text,
   role text not null default 'user' check (role in ('user','admin')),
   created_at timestamp with time zone default now()
 );

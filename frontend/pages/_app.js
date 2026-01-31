@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useReducer, useState } from 'reac
 import { useRouter } from 'next/router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { supabase } from '../lib/supabaseClient';
 
 // Simple cart context for frontend only
 const CartContext = createContext();
@@ -75,28 +76,59 @@ function MyApp({ Component, pageProps }) {
     window.localStorage.setItem('auf-cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Restore logged-in user if they did not log out
+  // Restore logged-in user from Supabase session
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const stored = window.localStorage.getItem('auf-user');
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        // ignore
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        // Fetch user data from users table
+        supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .single()
+          .then(({ data }) => {
+            if (data) {
+              setUser(data);
+            } else {
+              setUser(session.user);
+            }
+          });
       }
-    }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .single()
+          .then(({ data }) => {
+            if (data) {
+              setUser(data);
+            } else {
+              setUser(session.user);
+            }
+          });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const setAndPersistUser = (nextUser) => {
     setUser(nextUser);
-    if (typeof window !== 'undefined') {
-      if (nextUser) {
-        window.localStorage.setItem('auf-user', JSON.stringify(nextUser));
-      } else {
-        window.localStorage.removeItem('auf-user');
-      }
-    }
+    // No need for localStorage - Supabase handles session persistence
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push('/');
   };
 
   const value = {
@@ -109,7 +141,7 @@ function MyApp({ Component, pageProps }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser: setAndPersistUser, logout: () => setAndPersistUser(null) }}>
+    <AuthContext.Provider value={{ user, setUser: setAndPersistUser, logout }}>
       <CartContext.Provider value={value}>
         <div className="min-h-screen flex flex-col bg-gradient-to-b from-black via-secondary to-black">
           {!isAuthPage && <Header />}
