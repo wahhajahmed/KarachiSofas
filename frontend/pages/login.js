@@ -70,7 +70,7 @@ export default function LoginPage() {
         .maybeSingle();
 
       if (userError || !userData) {
-        // User exists in auth but not in users table - create record
+        // User exists in auth but not in users table - try to create record
         const { data: newUserData, error: insertError } = await supabase
           .from('users')
           .insert({
@@ -84,12 +84,19 @@ export default function LoginPage() {
           .maybeSingle();
         
         if (insertError && insertError.code !== '23505') {
+          // Log error but allow login to continue with auth user data
           console.error('Error creating user record:', insertError);
-          setError('Login successful but failed to create user profile. Please try again or contact support.');
-          return;
+          console.log('Proceeding with auth user data only');
         }
         
-        setUser(newUserData || authData.user);
+        // Use the created user data if available, otherwise use auth user
+        setUser(newUserData || {
+          id: authData.user.id,
+          email: authData.user.email,
+          name: authData.user.user_metadata?.name || '',
+          phone: authData.user.user_metadata?.phone || '',
+          role: 'user'
+        });
       } else {
         setUser(userData);
       }
