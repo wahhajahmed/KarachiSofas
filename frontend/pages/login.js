@@ -18,8 +18,27 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      if (!email || !password) {
-        setError('Please enter email and password.');
+      // Validate email field
+      if (!email) {
+        setError('Email is required.');
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError('Please enter a valid email address.');
+        return;
+      }
+
+      // Validate password field
+      if (!password) {
+        setError('Password is required.');
+        return;
+      }
+
+      if (password.length < 8) {
+        setError('Password must be at least 8 characters long.');
         return;
       }
 
@@ -30,7 +49,16 @@ export default function LoginPage() {
       });
 
       if (authError) {
-        setError(authError.message || 'Login failed. Please check your credentials.');
+        // Provide specific error messages
+        if (authError.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else if (authError.message.includes('Email not confirmed')) {
+          setError('Please verify your email address before logging in.');
+        } else if (authError.message.includes('User not found')) {
+          setError('No account found with this email. Please sign up first.');
+        } else {
+          setError(authError.message || 'Login failed. Please try again.');
+        }
         return;
       }
 

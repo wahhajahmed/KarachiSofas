@@ -28,13 +28,55 @@ export default function SignupPage() {
     setSuccess(false);
     setLoading(true);
     try {
-      if (!name || !email || !phone || !password) {
-        setError('Please fill in all fields.');
+      // Validate name field
+      if (!name || name.trim().length === 0) {
+        setError('Full name is required.');
+        return;
+      }
+
+      if (name.trim().length < 3) {
+        setError('Name must be at least 3 characters long.');
+        return;
+      }
+
+      // Validate email field
+      if (!email) {
+        setError('Email is required.');
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError('Please enter a valid email address (e.g., name@example.com).');
+        return;
+      }
+
+      // Validate phone field
+      if (!phone) {
+        setError('Phone number is required.');
+        return;
+      }
+
+      if (phone.length < 10) {
+        setError('Please enter a valid phone number (at least 10 digits).');
+        return;
+      }
+
+      // Validate password field
+      if (!password) {
+        setError('Password is required.');
         return;
       }
 
       if (password.length < 8) {
         setError('Password must be at least 8 characters long.');
+        return;
+      }
+
+      // Check password strength
+      if (!/[A-Z]/.test(password) && !/[a-z]/.test(password)) {
+        setError('Password should contain at least one letter.');
         return;
       }
 
@@ -53,7 +95,16 @@ export default function SignupPage() {
       });
 
       if (authError) {
-        setError(authError.message || 'Failed to create account.');
+        // Provide specific error messages
+        if (authError.message.includes('User already registered')) {
+          setError('An account with this email already exists. Please login instead.');
+        } else if (authError.message.includes('Password should be at least')) {
+          setError('Password must be at least 8 characters long.');
+        } else if (authError.message.includes('invalid email')) {
+          setError('Please enter a valid email address.');
+        } else {
+          setError(authError.message || 'Failed to create account. Please try again.');
+        }
         return;
       }
 

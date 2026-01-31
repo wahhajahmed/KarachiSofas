@@ -46,12 +46,64 @@ export default function CheckoutPage() {
     }
     
     if (!cart.length) {
-      setMessage('Your cart is empty.');
+      setMessage('Your cart is empty. Please add items before checking out.');
       return;
     }
     
-    if (!name || !email || !phone || !address || !area || !landmark) {
-      setMessage('Please fill in all required details: name, email, phone, full address, area, and nearest landmark.');
+    // Validate name field
+    if (!name || name.trim().length === 0) {
+      setMessage('Full name is required.');
+      return;
+    }
+
+    if (name.trim().length < 3) {
+      setMessage('Name must be at least 3 characters long.');
+      return;
+    }
+
+    // Validate email field
+    if (!email) {
+      setMessage('Email is required.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setMessage('Please enter a valid email address.');
+      return;
+    }
+
+    // Validate phone field
+    if (!phone) {
+      setMessage('Phone number is required.');
+      return;
+    }
+
+    if (phone.length < 10) {
+      setMessage('Please enter a valid phone number (at least 10 digits).');
+      return;
+    }
+
+    // Validate address field
+    if (!address || address.trim().length === 0) {
+      setMessage('Full address is required.');
+      return;
+    }
+
+    if (address.trim().length < 10) {
+      setMessage('Please enter a complete address (at least 10 characters).');
+      return;
+    }
+
+    // Validate area field
+    if (!area || area.trim().length === 0) {
+      setMessage('Area/City is required.');
+      return;
+    }
+
+    // Validate landmark field
+    if (!landmark || landmark.trim().length === 0) {
+      setMessage('Nearest landmark is required for delivery.');
       return;
     }
 
@@ -70,15 +122,22 @@ export default function CheckoutPage() {
       }));
 
       const { error: orderError } = await supabase.from('orders').insert(orderPayload);
-      if (orderError) throw orderError;
+      
+      if (orderError) {
+        if (orderError.message.includes('violates foreign key constraint')) {
+          setMessage('Invalid product or user data. Please try again or contact support.');
+        } else {
+          setMessage(`Failed to place order: ${orderError.message}`);
+        }
+        return;
+      }
 
       clearCart();
-      setMessage('Thank you! Your order has been placed. Our team will contact you for confirmation.');
+      setMessage('✓ Thank you! Your order has been placed successfully. Our team will contact you for confirmation.');
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error(err);
-      // Show the actual Supabase error message to help diagnose issues like RLS or schema mismatch
-      setMessage(`Something went wrong while placing your order: ${err.message || 'Unknown error'}`);
+      setMessage(`Something went wrong: ${err.message || 'Please try again or contact support.'}`);
     } finally {
       setPlacing(false);
     }
@@ -196,7 +255,15 @@ export default function CheckoutPage() {
           <span className="font-bold text-primary">Rs {total.toLocaleString()}</span>
         </div>
 
-        {message && <p className="text-xs text-yellow-300">{message}</p>}
+        {message && (
+          <div className={`text-sm p-3 rounded-lg ${
+            message.startsWith('✓') 
+              ? 'bg-green-500/10 border border-green-500/30 text-green-300' 
+              : 'bg-red-500/10 border border-red-500/30 text-red-300'
+          }`}>
+            {message}
+          </div>
+        )}
 
         <button
           type="submit"
