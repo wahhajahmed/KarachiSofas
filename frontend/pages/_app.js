@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+﻿import '../styles/globals.css';
 import { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
 import Header from '../components/Header';
@@ -16,7 +16,7 @@ function cartReducer(state, action) {
     case 'ADD': {
       const existing = state.find((item) => item.id === action.payload.id);
       if (existing) {
-        // Item already in cart – keep quantity as-is; user can change it from the cart page
+        // Item already in cart â€“ keep quantity as-is; user can change it from the cart page
         return state;
       }
       return [...state, { ...action.payload, quantity: 1 }];
@@ -384,5 +384,3 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
-/ /   F o r c e   d e p l o y  
- 

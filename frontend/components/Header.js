@@ -34,7 +34,7 @@ export default function Header() {
   return (
     <header className="bg-secondary/95 border-b border-primary/40 sticky top-0 z-40 backdrop-blur-lg shadow-lg">
       <div className="container-max py-5">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-0">
           <div className="flex items-center space-x-8">
             <Link href="/" onClick={closeMobileMenu}>
               <div className="flex items-center space-x-4 cursor-pointer group">
@@ -139,6 +139,7 @@ export default function Header() {
             </>
           )}
         </nav>
+        </div>
         
         {/* Mobile Welcome Message - Below Logo */}
         {user && (
@@ -148,12 +149,12 @@ export default function Header() {
         )}
       </div>
 
-        {/* Mobile Navigation Menu */}
-        <div
-          className={`lg:hidden fixed top-0 left-0 w-full h-screen bg-black z-[55] transition-all duration-300 ${
-            mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
-          }`}
-        >
+      {/* Mobile Navigation Menu */}
+      <div
+        className={`lg:hidden fixed top-0 left-0 w-full h-screen bg-black z-[55] transition-all duration-300 ${
+          mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+        }`}
+      >
           {/* Close button */}
           <button
             onClick={closeMobileMenu}
@@ -239,7 +240,6 @@ export default function Header() {
             </nav>
           </div>
         </div>
-      </div>
     </header>
   );
 }
