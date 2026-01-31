@@ -102,15 +102,14 @@ export default function LoginPage() {
       }
 
       // If the user came from an Add to Cart action, automatically add that item now
-      let shouldRedirectToCart = false;
       if (typeof window !== 'undefined') {
         const pendingItemRaw = window.localStorage.getItem('auf-pending-cart-item');
         if (pendingItemRaw) {
           try {
             const pendingItem = JSON.parse(pendingItemRaw);
             if (pendingItem && pendingItem.id) {
+              // Add to cart silently in background
               addToCart(pendingItem);
-              shouldRedirectToCart = true;
             }
           } catch {
             // ignore JSON errors
@@ -119,12 +118,8 @@ export default function LoginPage() {
         }
       }
 
-      // Redirect to cart only if user came from add to cart, otherwise home
-      if (shouldRedirectToCart) {
-        router.push('/cart');
-      } else {
-        router.push('/');
-      }
+      // Always redirect to home page after login
+      router.push('/');
     } finally {
       setLoading(false);
     }
