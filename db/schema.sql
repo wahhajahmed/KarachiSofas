@@ -37,6 +37,17 @@ create table public.orders (
   created_at timestamp with time zone default now()
 );
 
+-- Cart table - stores user-specific cart items
+create table public.cart_items (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references public.users(id) on delete cascade not null,
+  product_id uuid references public.products(id) on delete cascade not null,
+  quantity integer not null default 1 check (quantity > 0),
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now(),
+  unique(user_id, product_id) -- One product per user in cart
+);
+
 -- Sample categories seed
 insert into public.categories (name) values
   ('Sofa'),

@@ -1,6 +1,23 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useAuth } from '../pages/_app';
 
 export default function ProductCard({ product, onAddToCart }) {
+  const router = useRouter();
+  const { user } = useAuth() || {};
+
+  const handleAddToCart = () => {
+    if (!user) {
+      // Store product info and redirect to login
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('auf-pending-cart-item', JSON.stringify(product));
+      }
+      router.push('/login');
+    } else {
+      onAddToCart?.(product);
+    }
+  };
+
   return (
     <div className="card overflow-hidden flex flex-col hover:scale-105 transition-transform duration-300">
       <div className="relative h-64 bg-gradient-to-br from-black via-secondary to-primary/30">
@@ -27,7 +44,7 @@ export default function ProductCard({ product, onAddToCart }) {
           <button
             type="button"
             className="btn-primary w-full"
-            onClick={() => onAddToCart?.(product)}
+            onClick={handleAddToCart}
           >
             Add to Cart
           </button>

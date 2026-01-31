@@ -17,6 +17,13 @@ export default function Header() {
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
+  const handleCartClick = (e) => {
+    if (!user) {
+      e.preventDefault();
+      router.push('/login');
+    }
+  };
+
   return (
     <header className="bg-secondary/95 border-b border-primary/40 sticky top-0 z-20 backdrop-blur-lg shadow-lg">
       <div className="container-max flex items-center justify-between py-5">
@@ -70,6 +77,7 @@ export default function Header() {
           </Link>
           <Link
             href="/cart"
+            onClick={handleCartClick}
             className={
               isActive('/cart')
                 ? 'text-primary border-b-2 border-primary pb-1 flex items-center transition-colors'
@@ -77,7 +85,7 @@ export default function Header() {
             }
           >
             <span>Cart</span>
-            {cartCount > 0 && (
+            {user && cartCount > 0 && (
               <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white px-2 py-1 min-w-[24px]">
                 {cartCount}
               </span>
@@ -145,7 +153,10 @@ export default function Header() {
             </Link>
             <Link
               href="/cart"
-              onClick={closeMobileMenu}
+              onClick={(e) => {
+                handleCartClick(e);
+                closeMobileMenu();
+              }}
               className={
                 isActive('/cart')
                   ? 'text-primary border-b-2 border-primary pb-1 flex items-center transition-colors'
@@ -153,7 +164,7 @@ export default function Header() {
               }
             >
               <span>Cart</span>
-              {cartCount > 0 && (
+              {user && cartCount > 0 && (
                 <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white px-2.5 py-1 min-w-[28px]">
                   {cartCount}
                 </span>
