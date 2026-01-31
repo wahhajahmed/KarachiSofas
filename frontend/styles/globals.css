@@ -14,15 +14,17 @@ a {
 }
 
 .btn-primary {
-  @apply bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-200 shadow-md hover:shadow-lg text-base;
+  @apply bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-200 shadow-md hover:shadow-lg text-base select-none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-primary:focus {
-  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-secondary;
+  @apply outline-none;
 }
 
 .btn-primary:active {
-  @apply scale-95;
+  @apply scale-95 outline-none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-secondary {
