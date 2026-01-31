@@ -234,18 +234,16 @@ export default function CheckoutPage() {
             <span className="font-bold text-xl">Total Amount</span>
             <span className="font-bold text-primary text-2xl">Rs {total.toLocaleString()}</span>
           </div>
-          {deliveryCharges > 0 && (
-            <div className="flex items-center justify-between pt-3 text-base">
-              <span className="text-gray-300">Delivery Charges</span>
-              <span className="font-semibold text-primary">Rs {deliveryCharges.toLocaleString()}</span>
-            </div>
-          )}
-          {deliveryCharges > 0 && (
-            <div className="flex items-center justify-between border-t border-primary/40 pt-3 mt-3 text-lg">
-              <span className="font-bold text-xl">Grand Total</span>
-              <span className="font-bold text-primary text-2xl">Rs {grandTotal.toLocaleString()}</span>
-            </div>
-          )}
+          <div className="flex items-center justify-between pt-3 text-base border-b border-primary/20 pb-3">
+            <span className="text-gray-300">Delivery Charges</span>
+            <span className="font-semibold text-primary">
+              {deliveryCharges > 0 ? `Rs ${deliveryCharges.toLocaleString()}` : 'Enter area to calculate'}
+            </span>
+          </div>
+          <div className="flex items-center justify-between pt-3 text-lg">
+            <span className="font-bold text-xl">Grand Total</span>
+            <span className="font-bold text-primary text-2xl">Rs {grandTotal.toLocaleString()}</span>
+          </div>
         </div>
       </div>
       <form onSubmit={handlePlaceOrder} className="bg-secondary/60 border border-primary/40 rounded-xl p-8 space-y-5">
