@@ -54,7 +54,7 @@ export default function Header() {
             </div>
           </Link>
           {user && (
-            <span className="text-base text-primary font-medium hidden md:inline">
+            <span className="text-base text-primary font-medium hidden lg:inline">
               Welcome, {user.name || user.email}
             </span>
           )}
