@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
-import { useAuth, useCart } from './_app';
 
 export default function SignupPage() {
   const router = useRouter();
-  const { setUser } = useAuth();
-  const { addToCart } = useCart();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const formatName = (rawName) => {
     if (!rawName) return '';
@@ -26,6 +24,7 @@ export default function SignupPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
+    setSuccess(false);
     setLoading(true);
     try {
       if (!name || !email || !password) {
@@ -97,25 +96,13 @@ export default function SignupPage() {
         createdOrUpdatedUser = data;
       }
 
-      setUser(createdOrUpdatedUser);
-
-      // If signup was triggered from an Add to Cart action, add that item now
-      if (typeof window !== 'undefined') {
-        const pendingItemRaw = window.localStorage.getItem('auf-pending-cart-item');
-        if (pendingItemRaw) {
-          try {
-            const pendingItem = JSON.parse(pendingItemRaw);
-            if (pendingItem && pendingItem.id) {
-              addToCart(pendingItem);
-            }
-          } catch {
-            // ignore JSON errors
-          }
-          window.localStorage.removeItem('auf-pending-cart-item');
-        }
-      }
-
-      router.push('/cart');
+      // Don't auto-login - show success message and redirect to login
+      setSuccess(true);
+      
+      // Redirect to login page after 2 seconds
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
     } finally {
       setLoading(false);
     }
