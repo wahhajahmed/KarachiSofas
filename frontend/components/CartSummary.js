@@ -51,27 +51,28 @@ export default function CartSummary({ items, onRemove, onIncrease, onDecrease })
                   −
                 </button>
                 <span className="px-3 sm:px-4 py-1.5 sm:py-2 text-base min-w-[2.5rem] sm:min-w-[3rem] text-center font-semibold">
-                {item.quantity}
-              </span>
-              <button
-                type="button"
-                onClick={() => onIncrease?.(item.id)}
-                className="px-2 sm:px-3 py-1.5 sm:py-2 text-base bg-black/40 hover:bg-primary hover:text-secondary transition-colors"
-              >
-                +
-              </button>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <p className="font-bold text-primary text-lg sm:text-xl">
-                Rs {(item.price * item.quantity).toLocaleString()}
-              </p>
-              <button
-                type="button"
-                onClick={() => onRemove(item.id)}
-                className="text-sm text-red-400 hover:text-red-300 transition-colors"
-              >
-                Remove
-              </button>
+                  {item.quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onIncrease?.(item.id)}
+                  className="px-2 sm:px-3 py-1.5 sm:py-2 text-base bg-black/40 hover:bg-primary hover:text-secondary transition-colors"
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex items-center gap-2 sm:gap-4">
+                <p className="font-bold text-primary text-lg sm:text-xl">
+                  Rs {(item.price * item.quantity).toLocaleString()}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => onRemove(item.id)}
+                  className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           </div>
         </div>
