@@ -67,26 +67,43 @@ function MyApp({ Component, pageProps }) {
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
+        console.log('Session found on page load:', session.user.id);
         // Fetch user data from users table
         supabase
           .from('users')
           .select('*')
           .eq('id', session.user.id)
           .maybeSingle()
-          .then(({ data }) => {
+          .then(({ data, error }) => {
+            if (error) {
+              console.error('Error fetching user data:', error);
+            }
             if (data) {
+              console.log('User data loaded from database:', data);
               setUser(data);
               loadUserCart(data.id);
             } else {
-              setUser(session.user);
+              console.log('No user data in database, using auth user');
+              // Create user object from session
+              const userData = {
+                id: session.user.id,
+                email: session.user.email,
+                name: session.user.user_metadata?.name || '',
+                phone: session.user.user_metadata?.phone || '',
+                role: 'user'
+              };
+              setUser(userData);
               loadUserCart(session.user.id);
             }
           });
+      } else {
+        console.log('No session found');
       }
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', _event, session?.user?.id);
       if (session?.user) {
         supabase
           .from('users')
@@ -98,7 +115,14 @@ function MyApp({ Component, pageProps }) {
               setUser(data);
               loadUserCart(data.id);
             } else {
-              setUser(session.user);
+              const userData = {
+                id: session.user.id,
+                email: session.user.email,
+                name: session.user.user_metadata?.name || '',
+                phone: session.user.user_metadata?.phone || '',
+                role: 'user'
+              };
+              setUser(userData);
               loadUserCart(session.user.id);
             }
           });
