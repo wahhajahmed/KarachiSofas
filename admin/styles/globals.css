@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-secondary text-white min-h-screen;
+}
+
+.sidebar-link {
+  @apply block px-3 py-2 rounded-md text-sm text-gray-200 hover:bg-primary/20 hover:text-primary;
+}
+
+.sidebar-link-active {
+  @apply bg-primary text-secondary font-semibold shadow;
+}
+
+.btn-primary {
+  @apply bg-primary text-secondary px-3 py-1.5 rounded-md text-sm font-semibold hover:bg-primary-dark transition;
+}
