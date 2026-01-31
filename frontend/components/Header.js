@@ -139,13 +139,13 @@ export default function Header() {
 
         {/* Mobile Navigation Menu */}
         <div
-          className={`lg:hidden fixed inset-0 bg-black/95 backdrop-blur-lg z-20 transition-all duration-300 ${
+          className={`lg:hidden fixed inset-0 bg-secondary z-20 transition-all duration-300 ${
             mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
           }`}
           onClick={closeMobileMenu}
         >
           <nav
-            className={`flex flex-col items-center justify-center h-full space-y-8 text-xl font-medium transition-transform duration-300 ${
+            className={`flex flex-col items-center justify-center h-full space-y-6 text-lg font-medium transition-transform duration-300 px-6 ${
               mobileMenuOpen ? 'scale-100' : 'scale-95'
             }`}
             onClick={(e) => e.stopPropagation()}
@@ -196,14 +196,16 @@ export default function Header() {
             </Link>
             {user ? (
               <>
-                <span className="text-base text-primary font-medium">Welcome, {user.name || user.email}</span>
+                <div className="text-center border-t border-primary/30 pt-6 w-full">
+                  <span className="text-sm text-primary font-medium">Welcome, {user.name || user.email}</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => {
                     auth.logout?.();
                     closeMobileMenu();
                   }}
-                  className="text-gray-200 hover:text-primary transition-colors"
+                  className="text-gray-200 hover:text-primary transition-colors bg-secondary/60 border border-primary/40 rounded-lg px-6 py-3"
                 >
                   Logout
                 </button>
