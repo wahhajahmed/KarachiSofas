@@ -108,8 +108,8 @@ export default function LoginPage() {
           try {
             const pendingItem = JSON.parse(pendingItemRaw);
             if (pendingItem && pendingItem.id) {
-              // Add to cart silently (no alerts) in background, don't wait
-              addToCart(pendingItem, true); // true = silent mode
+              // Add to cart silently (no alerts) but WAIT for it to complete
+              await addToCart(pendingItem, true); // true = silent mode
             }
           } catch (err) {
             console.error('Error adding pending cart item:', err);
@@ -118,7 +118,7 @@ export default function LoginPage() {
         }
       }
 
-      // Immediately redirect to home page after login
+      // Redirect to home page after cart is updated
       router.push('/');
     } finally {
       setLoading(false);
