@@ -57,16 +57,7 @@ export default function ProductDetailPage() {
         <button
           type="button"
           className="btn-primary"
-          onClick={() => {
-            if (!user) {
-              if (typeof window !== 'undefined') {
-                window.localStorage.setItem('auf-pending-cart-item', JSON.stringify(product));
-              }
-              router.push('/login');
-              return;
-            }
-            addToCart(product);
-          }}
+          onClick={() => addToCart(product)}
         >
           Add to Cart
         </button>

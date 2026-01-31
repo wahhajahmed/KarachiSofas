@@ -45,16 +45,7 @@ export default function CategoryPage() {
             <ProductCard
               key={p.id}
               product={p}
-              onAddToCart={(product) => {
-                if (!user) {
-                  if (typeof window !== 'undefined') {
-                    window.localStorage.setItem('auf-pending-cart-item', JSON.stringify(product));
-                  }
-                  router.push('/login');
-                  return;
-                }
-                addToCart(product);
-              }}
+              onAddToCart={addToCart}
             />
           ))}
         </div>

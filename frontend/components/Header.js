@@ -54,7 +54,9 @@ export default function Header() {
             </div>
           </Link>
           {user && (
-            <span className="text-sm text-gray-300 hidden md:inline">Hi, {user.name}</span>
+            <span className="text-base text-primary font-medium hidden md:inline">
+              Welcome, {user.name || user.email}
+            </span>
           )}
         </div>
 
@@ -194,7 +196,7 @@ export default function Header() {
             </Link>
             {user ? (
               <>
-                <span className="text-base text-gray-400">Hi, {user.name}</span>
+                <span className="text-base text-primary font-medium">Welcome, {user.name || user.email}</span>
                 <button
                   type="button"
                   onClick={() => {
