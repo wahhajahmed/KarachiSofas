@@ -203,8 +203,8 @@ function MyApp({ Component, pageProps }) {
 
         if (userError && userError.code !== '23505') {
           console.error('Error creating user record:', userError);
-          alert('Failed to add item. Please logout and login again.');
-          return;
+          // Don't block - try to add to cart anyway
+          console.log('Attempting to add to cart despite user record error...');
         }
       }
 
