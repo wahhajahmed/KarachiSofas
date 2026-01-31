@@ -32,7 +32,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-secondary/95 border-b border-primary/40 sticky top-0 z-20 backdrop-blur-lg shadow-lg">
+    <header className="bg-secondary/95 border-b border-primary/40 sticky top-0 z-40 backdrop-blur-lg shadow-lg">
       <div className="container-max flex items-center justify-between py-5">
         <div className="flex items-center space-x-8">
           <Link href="/" onClick={closeMobileMenu}>
@@ -64,7 +64,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden flex flex-col space-y-1.5 p-2 z-50 relative"
+          className="lg:hidden flex flex-col space-y-1.5 p-2 z-[60] relative"
           aria-label="Toggle menu"
         >
           <span className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
@@ -139,29 +139,29 @@ export default function Header() {
 
         {/* Mobile Navigation Menu */}
         <div
-          className={`lg:hidden fixed inset-0 bg-[#0a0a0a] z-50 transition-all duration-300 ${
-            mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+          className={`lg:hidden fixed inset-0 bg-black z-[55] transition-all duration-300 ${
+            mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
           }`}
         >
           {/* Close button */}
           <button
             onClick={closeMobileMenu}
-            className="absolute top-6 right-6 text-primary hover:text-primary-dark"
+            className="absolute top-6 right-6 text-primary hover:text-primary-dark z-[60] w-10 h-10 flex items-center justify-center"
             aria-label="Close menu"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-8 h-8">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
 
           <nav
-            className={`flex flex-col items-center justify-center h-full space-y-8 px-8 transition-transform duration-300 ${
+            className={`flex flex-col items-center justify-center h-full space-y-6 px-8 transition-transform duration-300 ${
               mobileMenuOpen ? 'scale-100' : 'scale-95'
             }`}
           >
             {/* Logo Section */}
-            <div className="text-center mb-4">
-              <div className="text-4xl font-extrabold tracking-widest text-primary">AUF</div>
+            <div className="text-center mb-2">
+              <div className="text-3xl font-extrabold tracking-widest text-primary">AUF</div>
               <div className="text-xs uppercase tracking-[0.3em] text-gray-400 mt-1">
                 Ali Usman Fatima
               </div>
@@ -169,8 +169,8 @@ export default function Header() {
 
             {/* User Welcome */}
             {user && (
-              <div className="text-center pb-4 border-b border-primary/30 w-full">
-                <span className="text-base text-primary font-medium">Welcome, {user.name || user.email}</span>
+              <div className="text-center py-3 border-y border-primary/30 w-full max-w-xs">
+                <span className="text-sm text-primary font-medium">Welcome, {user.name || user.email}</span>
               </div>
             )}
 
@@ -178,7 +178,7 @@ export default function Header() {
             <Link
               href="/"
               onClick={closeMobileMenu}
-              className="text-xl text-gray-200 hover:text-primary transition-colors font-medium"
+              className="text-lg text-gray-200 hover:text-primary transition-colors font-medium"
             >
               Home
             </Link>
@@ -189,11 +189,11 @@ export default function Header() {
                 handleCartClick(e);
                 closeMobileMenu();
               }}
-              className="text-xl text-gray-200 hover:text-primary transition-colors font-medium flex items-center gap-3"
+              className="text-lg text-gray-200 hover:text-primary transition-colors font-medium flex items-center gap-3"
             >
               <span>Cart</span>
               {user && cartCount > 0 && (
-                <span className="inline-flex items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white px-3 py-1 min-w-[32px]">
+                <span className="inline-flex items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white px-2.5 py-1 min-w-[28px]">
                   {cartCount}
                 </span>
               )}
@@ -205,7 +205,7 @@ export default function Header() {
                 handleCheckoutClick(e);
                 closeMobileMenu();
               }}
-              className="text-xl text-gray-200 hover:text-primary transition-colors font-medium"
+              className="text-lg text-gray-200 hover:text-primary transition-colors font-medium"
             >
               Checkout
             </Link>
@@ -218,7 +218,7 @@ export default function Header() {
                   auth.logout?.();
                   closeMobileMenu();
                 }}
-                className="mt-8 bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-secondary transition-all px-8 py-3 rounded-lg font-semibold text-lg"
+                className="mt-6 bg-primary/10 border-2 border-primary text-primary hover:bg-primary hover:text-secondary transition-all px-8 py-3 rounded-lg font-semibold text-base"
               >
                 Logout
               </button>
@@ -226,7 +226,7 @@ export default function Header() {
               <Link
                 href="/login"
                 onClick={closeMobileMenu}
-                className="mt-8 bg-primary text-secondary hover:bg-primary-dark transition-all px-8 py-3 rounded-lg font-semibold text-lg"
+                className="mt-6 bg-primary text-secondary hover:bg-primary-dark transition-all px-8 py-3 rounded-lg font-semibold text-base"
               >
                 Login / Sign Up
               </Link>
