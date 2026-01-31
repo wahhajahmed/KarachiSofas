@@ -22,7 +22,8 @@ a {
 }
 
 .container-max {
-  @apply max-w-7xl mx-auto px-6 sm:px-8 lg:px-12;
+  @apply w-full mx-auto px-8 sm:px-12 lg:px-16 xl:px-20 2xl:px-24;
+  max-width: 1920px;
 }
 
 .card {

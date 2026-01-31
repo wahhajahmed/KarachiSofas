@@ -56,7 +56,7 @@ export default function AdminApp({ Component, pageProps }) {
       <OrdersContext.Provider value={{ pendingCount, setPendingCount }}>
         <div className="flex min-h-screen bg-gradient-to-br from-black via-secondary to-black">
           <Sidebar />
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-8 lg:p-12">
             {/* Avoid flashing protected content before hydration */}
             {(!hydrated || adminUser || router.pathname === '/login' || router.pathname === '/signup') && (
               <Component {...pageProps} />
