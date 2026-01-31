@@ -64,6 +64,14 @@ export default function Sidebar() {
             </span>
           )}
         </Link>
+        <Link
+          href="/delivery-charges"
+          className={
+            isActive('/delivery-charges') ? 'sidebar-link sidebar-link-active' : 'sidebar-link'
+          }
+        >
+          Delivery Charges
+        </Link>
       </nav>
       <div className="mt-10 text-sm text-gray-300 space-y-2 p-3 bg-secondary/40 rounded-lg border border-primary/20">
         <p className="text-sm font-semibold text-primary mb-2">Account</p>

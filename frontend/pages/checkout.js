@@ -17,6 +17,7 @@ export default function CheckoutPage() {
   const [landmark, setLandmark] = useState('');
   const [placing, setPlacing] = useState(false);
   const [message, setMessage] = useState('');
+  const [deliveryCharges, setDeliveryCharges] = useState(0);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -33,7 +34,54 @@ export default function CheckoutPage() {
     setPhone((prev) => prev || user.phone || '');
   }, [user]);
 
+  // Fetch delivery charges when area changes
+  useEffect(() => {
+    async function fetchDeliveryCharges() {
+      if (!area || area.trim().length === 0) {
+        setDeliveryCharges(0);
+        return;
+      }
+
+      try {
+        // Try exact match first
+        let { data, error } = await supabase
+          .from('delivery_charges')
+          .select('charges')
+          .ilike('area', area.trim())
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error fetching delivery charges:', error);
+        }
+
+        if (data) {
+          setDeliveryCharges(Number(data.charges));
+        } else {
+          // If no exact match, get "Other Areas" charges
+          const { data: otherData } = await supabase
+            .from('delivery_charges')
+            .select('charges')
+            .eq('area', 'Other Areas')
+            .maybeSingle();
+          
+          setDeliveryCharges(otherData ? Number(otherData.charges) : 0);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setDeliveryCharges(0);
+      }
+    }
+
+    // Debounce the API call
+    const timer = setTimeout(() => {
+      fetchDeliveryCharges();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [area]);
+
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const grandTotal = total + deliveryCharges;
 
   async function handlePlaceOrder(e) {
     e.preventDefault();
@@ -147,93 +195,146 @@ export default function CheckoutPage() {
     <div className="grid md:grid-cols-2 gap-8 items-start">
       <div>
         <h1 className="text-2xl font-bold text-primary mb-4">Checkout</h1>
-        <CartSummary items={cart} onRemove={() => {}} />
+        {/* Cart items display - simplified for checkout */}
+        <div className="space-y-4">
+          {cart.map((item) => (
+            <div
+              key={item.id}
+              className="card flex items-center justify-between p-5 space-x-6"
+            >
+              <div className="flex items-center space-x-4 flex-1">
+                {item.image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={item.image_url}
+                    alt={item.name}
+                    className="h-20 w-20 object-cover rounded-lg border border-primary/40"
+                  />
+                ) : (
+                  <div className="h-20 w-20 rounded-lg border border-primary/20 flex items-center justify-center text-xs text-gray-400">
+                    No image
+                  </div>
+                )}
+                <div>
+                  <p className="font-bold text-lg">{item.name}</p>
+                  <p className="text-sm text-gray-300">
+                    Rs {Number(item.price).toLocaleString()} each
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    Quantity: {item.quantity}
+                  </p>
+                </div>
+              </div>
+              <p className="font-bold text-primary text-xl">
+                Rs {(item.price * item.quantity).toLocaleString()}
+              </p>
+            </div>
+          ))}
+          <div className="flex items-center justify-between border-t-2 border-primary/40 pt-5 mt-4 text-lg">
+            <span className="font-bold text-xl">Total Amount</span>
+            <span className="font-bold text-primary text-2xl">Rs {total.toLocaleString()}</span>
+          </div>
+          {deliveryCharges > 0 && (
+            <div className="flex items-center justify-between pt-3 text-base">
+              <span className="text-gray-300">Delivery Charges</span>
+              <span className="font-semibold text-primary">Rs {deliveryCharges.toLocaleString()}</span>
+            </div>
+          )}
+          {deliveryCharges > 0 && (
+            <div className="flex items-center justify-between border-t border-primary/40 pt-3 mt-3 text-lg">
+              <span className="font-bold text-xl">Grand Total</span>
+              <span className="font-bold text-primary text-2xl">Rs {grandTotal.toLocaleString()}</span>
+            </div>
+          )}
+        </div>
       </div>
-      <form onSubmit={handlePlaceOrder} className="bg-secondary/60 border border-primary/40 rounded-xl p-5 space-y-4 text-sm">
-        <h2 className="text-lg font-semibold text-primary">Customer Details</h2>
-        <div className="space-y-1">
-          <label className="block text-xs text-gray-300">Full Name</label>
+      <form onSubmit={handlePlaceOrder} className="bg-secondary/60 border border-primary/40 rounded-xl p-8 space-y-5">
+        <h2 className="text-2xl font-semibold text-primary mb-4">Customer Details</h2>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-300">Full Name</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="block text-xs text-gray-300">Email</label>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-300">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="block text-xs text-gray-300">Phone Number</label>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-300">Phone Number</label>
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="03XX-XXXXXXX"
-            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
-        <div className="space-y-1">
-          <label className="block text-xs text-gray-300">Full Address</label>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-300">Full Address</label>
           <textarea
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            rows={2}
+            rows={3}
             placeholder="House / Flat, Street, Building, etc."
-            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="space-y-1">
-            <label className="block text-xs text-gray-300">Area</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">Area</label>
             <input
               value={area}
               onChange={(e) => setArea(e.target.value)}
               placeholder="e.g. Gulshan-e-Iqbal, DHA"
-              className="w-full rounded-md bg-black/40 border border-primary/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
           </div>
-          <div className="space-y-1">
-            <label className="block text-xs text-gray-300">Nearest Landmark</label>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-300">Nearest Landmark</label>
             <input
               value={landmark}
               onChange={(e) => setLandmark(e.target.value)}
               placeholder="e.g. near XYZ Mall"
-              className="w-full rounded-md bg-black/40 border border-primary/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
           </div>
         </div>
-        <div className="space-y-2">
-          <p className="text-xs text-gray-300">Payment Method</p>
-          <div className="flex flex-col space-y-2">
-            <label className="flex items-center space-x-2 text-xs">
+        <div className="space-y-3">
+          <p className="text-sm font-medium text-gray-300">Payment Method</p>
+          <div className="flex flex-col space-y-3">
+            <label className="flex items-center space-x-3 text-sm">
               <input
                 type="radio"
                 name="payment"
                 value="COD"
                 checked={paymentMethod === 'COD'}
                 onChange={() => setPaymentMethod('COD')}
+                className="w-4 h-4"
               />
               <span>Cash on Delivery (Karachi only)</span>
             </label>
-            <label className="flex items-center space-x-2 text-xs">
+            <label className="flex items-center space-x-3 text-sm">
               <input
                 type="radio"
                 name="payment"
                 value="Bank Transfer"
                 checked={paymentMethod === 'Bank Transfer'}
                 onChange={() => setPaymentMethod('Bank Transfer')}
+                className="w-4 h-4"
               />
               <span>Bank Transfer</span>
             </label>
@@ -241,8 +342,8 @@ export default function CheckoutPage() {
         </div>
 
         {paymentMethod === 'Bank Transfer' && (
-          <div className="p-3 rounded-md bg-black/40 border border-primary/40 text-xs text-gray-200">
-            <p className="font-semibold text-primary mb-1">Bank Details (Sample)</p>
+          <div className="p-4 rounded-md bg-black/40 border border-primary/40 text-sm text-gray-200">
+            <p className="font-semibold text-primary mb-2">Bank Details (Sample)</p>
             <p>Bank: HBL</p>
             <p>Account Name: AUF Karachi Sofas</p>
             <p>Account Number: 001234567890</p>
@@ -250,9 +351,9 @@ export default function CheckoutPage() {
           </div>
         )}
 
-        <div className="flex items-center justify-between border-t border-primary/40 pt-3 mt-2 text-sm">
-          <span>Total</span>
-          <span className="font-bold text-primary">Rs {total.toLocaleString()}</span>
+        <div className="flex items-center justify-between border-t border-primary/40 pt-4 mt-4 text-base">
+          <span className="font-semibold">Total</span>
+          <span className="font-bold text-primary text-lg">Rs {total.toLocaleString()}</span>
         </div>
 
         {message && (
