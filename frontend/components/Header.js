@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import Logo from '../../LOGO/LOGO.png';
 import { useCart, useAuth } from '../pages/_app';
 
 export default function Header() {
@@ -20,10 +19,12 @@ export default function Header() {
         <div className="flex items-center space-x-6">
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
-              {/* AUF Logo - loaded from shared LOGO folder */}
+              {/* AUF Logo */}
               <Image
-                src={Logo}
+                src="/logo.png"
                 alt="AUF Karachi Sofas Logo"
+                width={40}
+                height={40}
                 className="h-10 w-auto drop-shadow-lg"
               />
               <div>
