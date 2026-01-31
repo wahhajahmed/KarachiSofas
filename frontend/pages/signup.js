@@ -142,10 +142,10 @@ export default function SignupPage() {
         </div>
         <div>
           <label className="block mb-2 text-gray-200 font-medium">Password</label>
-          <div className="flex items-center space-x-3">
+          <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
-              className="input-field"
+              className="input-field pr-12"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -154,7 +154,7 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="text-gray-300 hover:text-primary transition-colors p-2 disabled:opacity-50"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors p-2 disabled:opacity-50"
               disabled={success}
               title={showPassword ? 'Hide password' : 'Show password'}
             >
