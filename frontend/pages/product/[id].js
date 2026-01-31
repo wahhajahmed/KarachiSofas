@@ -33,30 +33,30 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid md:grid-cols-2 gap-6 md:gap-8 px-4 md:px-0 py-6">
       <div className="bg-secondary/60 border border-primary/40 rounded-xl overflow-hidden">
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-80 object-cover"
+            className="w-full h-64 md:h-80 lg:h-96 object-cover"
           />
         ) : (
-          <div className="w-full h-80 flex items-center justify-center text-gray-500 text-xs">
+          <div className="w-full h-64 md:h-80 lg:h-96 flex items-center justify-center text-gray-500 text-sm">
             AUF Sofa Image
           </div>
         )}
       </div>
-      <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-primary">{product.name}</h1>
-        <p className="text-sm text-gray-200 whitespace-pre-line">{product.description}</p>
-        <p className="text-xl font-extrabold text-primary">
+      <div className="space-y-4 md:space-y-6">
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary">{product.name}</h1>
+        <p className="text-sm md:text-base text-gray-200 whitespace-pre-line leading-relaxed">{product.description}</p>
+        <p className="text-2xl md:text-3xl font-extrabold text-primary">
           Rs {Number(product.price).toLocaleString()}
         </p>
         <button
           type="button"
-          className="btn-primary"
+          className="btn-primary w-full md:w-auto"
           onClick={() => addToCart(product)}
         >
           Add to Cart
