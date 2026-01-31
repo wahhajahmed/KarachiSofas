@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useCart, useAuth } from './_app';
 import CartSummary from '../components/CartSummary';
 import { supabase } from '../lib/supabaseClient';
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const { cart, clearCart } = useCart();
   const { user } = useAuth() || {};
   const [paymentMethod, setPaymentMethod] = useState('COD');
@@ -15,6 +17,13 @@ export default function CheckoutPage() {
   const [landmark, setLandmark] = useState('');
   const [placing, setPlacing] = useState(false);
   const [message, setMessage] = useState('');
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user, router]);
 
   // Prefill name, email, and phone from logged-in user
   useEffect(() => {
@@ -28,7 +37,19 @@ export default function CheckoutPage() {
 
   async function handlePlaceOrder(e) {
     e.preventDefault();
-    if (!cart.length) return;
+    
+    // Ensure user is logged in
+    if (!user) {
+      setMessage('Please login to place an order.');
+      router.push('/login');
+      return;
+    }
+    
+    if (!cart.length) {
+      setMessage('Your cart is empty.');
+      return;
+    }
+    
     if (!name || !email || !phone || !address || !area || !landmark) {
       setMessage('Please fill in all required details: name, email, phone, full address, area, and nearest landmark.');
       return;
@@ -37,51 +58,7 @@ export default function CheckoutPage() {
     setPlacing(true);
     setMessage('');
     try {
-      let userId;
-
-      // Check if user is logged in via Supabase Auth
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.user) {
-        // User is authenticated - use their auth ID
-        userId = session.user.id;
-        
-        // Make sure user record exists in users table
-        const { data: existingUser } = await supabase
-          .from('users')
-          .select('id')
-          .eq('id', userId)
-          .maybeSingle();
-          
-        if (!existingUser) {
-          // Create user record if doesn't exist
-          await supabase.from('users').insert({
-            id: userId,
-            name,
-            email,
-            phone,
-            role: 'user',
-          });
-        }
-      } else {
-        // Guest checkout - create or find guest user
-        let { data: guestUser } = await supabase
-          .from('users')
-          .select('*')
-          .eq('email', email)
-          .maybeSingle();
-          
-        if (!guestUser) {
-          const { data: newUser, error: userError } = await supabase
-            .from('users')
-            .insert({ name, email, phone, role: 'user' })
-            .select('*')
-            .single();
-          if (userError) throw userError;
-          guestUser = newUser;
-        }
-        userId = guestUser.id;
-      }
+      const userId = user.id;
 
       const orderPayload = cart.map((item) => ({
         user_id: userId,

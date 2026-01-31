@@ -24,6 +24,13 @@ export default function Header() {
     }
   };
 
+  const handleCheckoutClick = (e) => {
+    if (!user) {
+      e.preventDefault();
+      router.push('/login');
+    }
+  };
+
   return (
     <header className="bg-secondary/95 border-b border-primary/40 sticky top-0 z-20 backdrop-blur-lg shadow-lg">
       <div className="container-max flex items-center justify-between py-5">
@@ -93,6 +100,7 @@ export default function Header() {
           </Link>
           <Link
             href="/checkout"
+            onClick={handleCheckoutClick}
             className={
               isActive('/checkout')
                 ? 'text-primary border-b-2 border-primary pb-1 transition-colors'
@@ -172,7 +180,10 @@ export default function Header() {
             </Link>
             <Link
               href="/checkout"
-              onClick={closeMobileMenu}
+              onClick={(e) => {
+                handleCheckoutClick(e);
+                closeMobileMenu();
+              }}
               className={
                 isActive('/checkout')
                   ? 'text-primary border-b-2 border-primary pb-1 transition-colors'
