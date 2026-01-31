@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useCart, useAuth } from '../pages/_app';
 
 export default function Header() {
@@ -8,16 +9,19 @@ export default function Header() {
   const { cart } = useCart() || { cart: [] };
   const auth = useAuth() || {};
   const user = auth.user;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (path) => router.pathname === path;
   const isAuthActive = router.pathname === '/login' || router.pathname === '/signup';
   const cartCount = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
     <header className="bg-secondary/95 border-b border-primary/40 sticky top-0 z-20 backdrop-blur-lg shadow-lg">
       <div className="container-max flex items-center justify-between py-5">
         <div className="flex items-center space-x-8">
-          <Link href="/">
+          <Link href="/" onClick={closeMobileMenu}>
             <div className="flex items-center space-x-4 cursor-pointer group">
               {/* AUF Logo */}
               <Image
@@ -39,7 +43,21 @@ export default function Header() {
             <span className="text-sm text-gray-300 hidden md:inline">Hi, {user.name}</span>
           )}
         </div>
-        <nav className="flex items-center space-x-8 text-base font-medium">
+
+        {/* Hamburger Button - Mobile Only */}
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden flex flex-col space-y-1.5 p-2 z-30"
+          aria-label="Toggle menu"
+        >
+          <span className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+          <span className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
+          <span className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+        </button>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center space-x-8 text-base font-medium">
           <Link
             href="/"
             className={
@@ -99,8 +117,90 @@ export default function Header() {
               </Link>
             </>
           )}
-          )}
         </nav>
+
+        {/* Mobile Navigation Menu */}
+        <div
+          className={`lg:hidden fixed inset-0 bg-black/95 backdrop-blur-lg z-20 transition-all duration-300 ${
+            mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+          }`}
+          onClick={closeMobileMenu}
+        >
+          <nav
+            className={`flex flex-col items-center justify-center h-full space-y-8 text-xl font-medium transition-transform duration-300 ${
+              mobileMenuOpen ? 'scale-100' : 'scale-95'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Link
+              href="/"
+              onClick={closeMobileMenu}
+              className={
+                isActive('/')
+                  ? 'text-primary border-b-2 border-primary pb-1 transition-colors'
+                  : 'text-gray-200 hover:text-primary transition-colors'
+              }
+            >
+              Home
+            </Link>
+            <Link
+              href="/cart"
+              onClick={closeMobileMenu}
+              className={
+                isActive('/cart')
+                  ? 'text-primary border-b-2 border-primary pb-1 flex items-center transition-colors'
+                  : 'text-gray-200 hover:text-primary flex items-center transition-colors'
+              }
+            >
+              <span>Cart</span>
+              {cartCount > 0 && (
+                <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white px-2.5 py-1 min-w-[28px]">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+            <Link
+              href="/checkout"
+              onClick={closeMobileMenu}
+              className={
+                isActive('/checkout')
+                  ? 'text-primary border-b-2 border-primary pb-1 transition-colors'
+                  : 'text-gray-200 hover:text-primary transition-colors'
+              }
+            >
+              Checkout
+            </Link>
+            {user ? (
+              <>
+                <span className="text-base text-gray-400">Hi, {user.name}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    auth.logout?.();
+                    closeMobileMenu();
+                  }}
+                  className="text-gray-200 hover:text-primary transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={closeMobileMenu}
+                  className={
+                    isAuthActive
+                      ? 'text-primary border-b-2 border-primary pb-1 transition-colors'
+                      : 'text-gray-200 hover:text-primary transition-colors'
+                  }
+                >
+                  Account
+                </Link>
+              </>
+            )}
+          </nav>
+        </div>
       </div>
     </header>
   );
