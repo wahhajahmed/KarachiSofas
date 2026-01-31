@@ -54,45 +54,45 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-secondary/70 border border-primary/40 rounded-xl p-6 shadow-xl">
-      <h1 className="text-xl font-semibold text-primary mb-4">Reset Password</h1>
-      {message && <p className="text-xs text-emerald-300 mb-2">{message}</p>}
-      {error && <p className="text-xs text-red-300 mb-2">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-3 text-sm">
+    <div className="max-w-md mx-auto bg-secondary/70 border border-primary/40 rounded-xl p-5 sm:p-6 shadow-xl">
+      <h1 className="text-lg sm:text-xl font-semibold text-primary mb-3 sm:mb-4">Reset Password</h1>
+      {message && <p className="text-xs sm:text-sm text-emerald-300 mb-2 p-2 bg-emerald-500/10 border border-emerald-500/30 rounded">{message}</p>}
+      {error && <p className="text-xs sm:text-sm text-red-300 mb-2 p-2 bg-red-500/10 border border-red-500/30 rounded">{error}</p>}
+      <form onSubmit={handleSubmit} className="space-y-3 text-xs sm:text-sm">
         <div>
           <label className="block mb-1 text-gray-200">Email</label>
           <input
             type="email"
-            className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/30 px-2 sm:px-3 py-2 text-xs sm:text-sm outline-none focus:border-primary"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div>
           <label className="block mb-1 text-gray-200">New Password</label>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             <input
               type={showPassword ? 'text' : 'password'}
-              className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
+              className="w-full rounded-md bg-black/40 border border-primary/30 px-2 sm:px-3 py-2 text-xs sm:text-sm outline-none focus:border-primary"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="text-[11px] text-gray-300 hover:text-primary"
+              className="text-[10px] sm:text-[11px] text-gray-300 hover:text-primary whitespace-nowrap px-2"
             >
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
-          <p className="mt-1 text-[11px] text-gray-400">
+          <p className="mt-1 text-[10px] sm:text-[11px] text-gray-400">
             Password must be at least 8 characters.
           </p>
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full btn-primary mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full btn-primary mt-2 disabled:opacity-60 disabled:cursor-not-allowed text-xs sm:text-sm"
         >
           {loading ? 'Updating…' : 'Update Password'}
         </button>

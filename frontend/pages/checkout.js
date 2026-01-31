@@ -214,68 +214,68 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="grid md:grid-cols-2 gap-8 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start px-4 md:px-0">
       <div>
-        <h1 className="text-2xl font-bold text-primary mb-4">Checkout</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-primary mb-4">Checkout</h1>
         {/* Cart items display - simplified for checkout */}
         <div className="space-y-4">
           {cart.map((item) => (
             <div
               key={item.id}
-              className="card flex items-center justify-between p-5 space-x-6"
+              className="card flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 md:p-5 gap-4 sm:gap-6"
             >
-              <div className="flex items-center space-x-4 flex-1">
+              <div className="flex items-center gap-3 sm:gap-4 flex-1 w-full sm:w-auto">
                 {item.image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={item.image_url}
                     alt={item.name}
-                    className="h-20 w-20 object-cover rounded-lg border border-primary/40"
+                    className="h-16 w-16 sm:h-20 sm:w-20 object-cover rounded-lg border border-primary/40 flex-shrink-0"
                   />
                 ) : (
-                  <div className="h-20 w-20 rounded-lg border border-primary/20 flex items-center justify-center text-xs text-gray-400">
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-lg border border-primary/20 flex items-center justify-center text-xs text-gray-400 flex-shrink-0">
                     No image
                   </div>
                 )}
-                <div>
-                  <p className="font-bold text-lg">{item.name}</p>
-                  <p className="text-sm text-gray-300">
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-base sm:text-lg truncate">{item.name}</p>
+                  <p className="text-xs sm:text-sm text-gray-300">
                     Rs {Number(item.price).toLocaleString()} each
                   </p>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-xs sm:text-sm text-gray-400">
                     Quantity: {item.quantity}
                   </p>
                 </div>
               </div>
-              <p className="font-bold text-primary text-xl">
+              <p className="font-bold text-primary text-lg sm:text-xl self-end sm:self-auto">
                 Rs {(item.price * item.quantity).toLocaleString()}
               </p>
             </div>
           ))}
-          <div className="flex items-center justify-between border-t-2 border-primary/40 pt-5 mt-4 text-lg">
-            <span className="font-bold text-xl">Total Amount</span>
-            <span className="font-bold text-primary text-2xl">Rs {total.toLocaleString()}</span>
+          <div className="flex items-center justify-between border-t-2 border-primary/40 pt-4 sm:pt-5 mt-4 text-base sm:text-lg">
+            <span className="font-bold text-lg sm:text-xl">Total Amount</span>
+            <span className="font-bold text-primary text-xl sm:text-2xl">Rs {total.toLocaleString()}</span>
           </div>
-          <div className="flex items-center justify-between pt-3 text-base border-b border-primary/20 pb-3">
+          <div className="flex items-center justify-between pt-3 text-sm sm:text-base border-b border-primary/20 pb-3">
             <span className="text-gray-300">Delivery Charges</span>
             <span className="font-semibold text-primary">
               {deliveryCharges > 0 ? `Rs ${deliveryCharges.toLocaleString()}` : 'Enter area to calculate'}
             </span>
           </div>
-          <div className="flex items-center justify-between pt-3 text-lg">
-            <span className="font-bold text-xl">Grand Total</span>
-            <span className="font-bold text-primary text-2xl">Rs {grandTotal.toLocaleString()}</span>
+          <div className="flex items-center justify-between pt-3 text-base sm:text-lg">
+            <span className="font-bold text-lg sm:text-xl">Grand Total</span>
+            <span className="font-bold text-primary text-xl sm:text-2xl">Rs {grandTotal.toLocaleString()}</span>
           </div>
         </div>
       </div>
-      <form onSubmit={handlePlaceOrder} className="bg-secondary/60 border border-primary/40 rounded-xl p-8 space-y-5">
-        <h2 className="text-2xl font-semibold text-primary mb-4">Customer Details</h2>
+      <form onSubmit={handlePlaceOrder} className="bg-secondary/60 border border-primary/40 rounded-xl p-5 sm:p-6 md:p-8 space-y-4 sm:space-y-5">
+        <h2 className="text-xl sm:text-2xl font-semibold text-primary mb-3 sm:mb-4">Customer Details</h2>
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-300">Full Name</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
@@ -285,7 +285,7 @@ export default function CheckoutPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
@@ -296,7 +296,7 @@ export default function CheckoutPage() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="03XX-XXXXXXX"
-            className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
             onChange={(e) => setAddress(e.target.value)}
             rows={3}
             placeholder="House / Flat, Street, Building, etc."
-            className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
@@ -318,7 +318,7 @@ export default function CheckoutPage() {
               value={area}
               onChange={(e) => setArea(e.target.value)}
               placeholder="e.g. Gulshan-e-Iqbal, DHA"
-              className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
           </div>
@@ -328,7 +328,7 @@ export default function CheckoutPage() {
               value={landmark}
               onChange={(e) => setLandmark(e.target.value)}
               placeholder="e.g. near XYZ Mall"
-              className="w-full rounded-md bg-black/40 border border-primary/40 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
           </div>

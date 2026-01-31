@@ -144,15 +144,15 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto card p-10 shadow-2xl">
-      <h1 className="text-4xl font-bold text-primary mb-8">Create Your AUF Account</h1>
-      {error && <p className="text-base text-red-300 mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
+    <div className="w-full max-w-2xl mx-auto card p-6 sm:p-8 md:p-10 shadow-2xl">
+      <h1 className="text-3xl sm:text-4xl font-bold text-primary mb-6 sm:mb-8">Create Your AUF Account</h1>
+      {error && <p className="text-sm sm:text-base text-red-300 mb-4 sm:mb-6 p-3 sm:p-4 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
       {success && (
-        <div className="text-base text-green-300 mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+        <div className="text-sm sm:text-base text-green-300 mb-4 sm:mb-6 p-3 sm:p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
           ✓ Account created successfully! Redirecting to login page...
         </div>
       )}
-      <form onSubmit={handleSubmit} className="space-y-6 text-base">
+      <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6 text-sm sm:text-base">
         <div>
           <label className="block mb-2 text-gray-200 font-medium">Full Name</label>
           <input
@@ -216,7 +216,7 @@ export default function SignupPage() {
               )}
             </button>
           </div>
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-xs sm:text-sm text-gray-400">
             Password must be at least 8 characters.
           </p>
         </div>
@@ -227,7 +227,7 @@ export default function SignupPage() {
         >
           {loading ? 'Creating account…' : success ? 'Account Created!' : 'Sign Up'}
         </button>
-        <p className="text-sm text-gray-300 mt-4 text-center">
+        <p className="text-xs sm:text-sm text-gray-300 mt-4 text-center">
           Already have an account?{' '}
           <a href="/login" className="text-primary hover:text-primary-dark transition-colors font-semibold">Login</a>
         </p>

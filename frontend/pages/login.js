@@ -126,10 +126,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto card p-10 shadow-2xl">
-      <h1 className="text-4xl font-bold text-primary mb-8">Login to AUF</h1>
-      {error && <p className="text-base text-red-300 mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-6 text-base">
+    <div className="w-full max-w-2xl mx-auto card p-6 sm:p-8 md:p-10 shadow-2xl">
+      <h1 className="text-3xl sm:text-4xl font-bold text-primary mb-6 sm:mb-8">Login to AUF</h1>
+      {error && <p className="text-sm sm:text-base text-red-300 mb-4 sm:mb-6 p-3 sm:p-4 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
+      <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6 text-sm sm:text-base">
         <div>
           <label className="block mb-2 text-gray-200 font-medium">Email</label>
           <input
@@ -168,7 +168,7 @@ export default function LoginPage() {
               )}
             </button>
           </div>
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-xs sm:text-sm text-gray-400">
             Password must be at least 8 characters.
           </p>
         </div>
@@ -179,7 +179,7 @@ export default function LoginPage() {
         >
           {loading ? 'Logging in…' : 'Login'}
         </button>
-        <div className="flex items-center justify-between mt-4 text-sm text-gray-300">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4 text-xs sm:text-sm text-gray-300">
           <a href="/signup" className="text-primary hover:text-primary-dark transition-colors">Create Account</a>
           <a href="/forgot-password" className="text-primary hover:text-primary-dark transition-colors">Forgot password?</a>
         </div>
