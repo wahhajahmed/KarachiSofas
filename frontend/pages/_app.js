@@ -223,20 +223,32 @@ function MyApp({ Component, pageProps }) {
       }
 
       // Add to database
-      const { error } = await supabase
+      const { error, data: insertedData } = await supabase
         .from('cart_items')
         .insert({
           user_id: user.id,
           product_id: product.id,
           quantity: 1
-        });
+        })
+        .select();
 
       if (error) {
         console.error('Error adding to cart:', error);
-        alert('Failed to add item to cart. Please try again.');
+        console.error('Error details:', JSON.stringify(error, null, 2));
+        
+        // Check if it's a foreign key error
+        if (error.code === '23503') {
+          alert('Database error: User record not found. Please contact support.');
+        } else if (error.message) {
+          alert(`Failed to add item: ${error.message}`);
+        } else {
+          alert('Failed to add item to cart. Please try again.');
+        }
         return;
       }
 
+      console.log('Cart item added successfully:', insertedData);
+      
       // Update local state
       dispatch({ type: 'ADD', payload: { ...product, quantity: 1 } });
       alert('Item added to cart successfully!');
