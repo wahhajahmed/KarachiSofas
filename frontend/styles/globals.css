@@ -31,16 +31,23 @@ a {
 .btn-primary {
   @apply bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-200 shadow-md hover:shadow-lg text-base select-none;
   -webkit-tap-highlight-color: transparent;
+  color: #000000 !important; /* Force text color to stay visible */
 }
 
 .btn-primary:focus {
   @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-secondary;
+  color: #000000 !important;
 }
 
 .btn-primary:active {
   @apply outline-none;
   -webkit-tap-highlight-color: transparent;
   transform: translateY(1px);
+  color: #000000 !important; /* Keep text visible when clicked */
+}
+
+.btn-primary:visited {
+  color: #000000 !important;
 }
 
 .btn-secondary {
