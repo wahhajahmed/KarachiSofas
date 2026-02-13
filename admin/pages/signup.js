@@ -52,6 +52,22 @@ export default function AdminSignupPage() {
 
       const formattedName = formatName(name);
 
+      // Check if there are already 2 admins (maximum limit)
+      const { data: adminCount, error: countError } = await supabase
+        .from('users')
+        .select('id', { count: 'exact', head: false })
+        .eq('role', 'admin');
+
+      if (countError) {
+        setError('Failed to check admin limit. Please try again.');
+        return;
+      }
+
+      if (adminCount && adminCount.length >= 2) {
+        setError('Admin access is full. Maximum 2 admin accounts allowed. Please contact existing admins (Ahsan Rauf or Faiza Ahsan) for assistance.');
+        return;
+      }
+
       // Check if email already exists in users or pending_admins
       const {
         data: existing,

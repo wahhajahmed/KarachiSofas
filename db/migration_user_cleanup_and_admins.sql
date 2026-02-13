@@ -1,9 +1,8 @@
 -- Migration: User cleanup and admin setup
 -- Run this in Supabase SQL Editor
 
--- Step 1: Delete all users except wahaj@gmail.com
-DELETE FROM public.users 
-WHERE email != 'wahaj@gmail.com';
+-- Step 1: Delete ALL existing users (clean slate)
+DELETE FROM public.users;
 
 -- Step 2: Add approved status column to users table for admin approval system
 ALTER TABLE public.users 
