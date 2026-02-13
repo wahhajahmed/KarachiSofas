@@ -51,16 +51,19 @@ export default function ForgotPasswordPage() {
       }
 
       // Update password
-      const { error: updateError } = await supabase
+      const { data: updateData, error: updateError } = await supabase
         .from('users')
         .update({ password: newPassword })
-        .eq('id', data.id);
+        .eq('id', data.id)
+        .select();
 
       if (updateError) {
-        setError('Failed to reset password. Please try again.');
+        console.error('Password update error:', updateError);
+        setError(`Failed to reset password: ${updateError.message || 'Unknown error'}`);
         return;
       }
 
+      console.log('Password updated successfully:', updateData);
       setMessage('Password reset successful! Redirecting to login...');
       setTimeout(() => {
         router.push('/login');
