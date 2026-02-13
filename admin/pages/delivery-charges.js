@@ -132,12 +132,12 @@ export default function DeliveryChargesPage() {
                       setSelectedArea(e.target.value);
                       setSelectedBlock('');
                     }}
-                    className="w-full rounded-md bg-black/40 border border-primary/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    className="w-full rounded-lg bg-black/60 border-2 border-primary/50 px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-white transition-all"
                     required
                   >
-                    <option value="">Choose Area...</option>
+                    <option value="" className="bg-secondary text-gray-400">Choose Area...</option>
                     {karachiAreas.map((area) => (
-                      <option key={area.name} value={area.name}>
+                      <option key={area.name} value={area.name} className="bg-secondary text-white font-medium py-2">
                         {area.name}
                       </option>
                     ))}
@@ -151,15 +151,15 @@ export default function DeliveryChargesPage() {
                   <select
                     value={selectedBlock}
                     onChange={(e) => setSelectedBlock(e.target.value)}
-                    className="w-full rounded-md bg-black/40 border border-primary/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    className="w-full rounded-lg bg-black/60 border-2 border-primary/50 px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-white transition-all"
                     required
                     disabled={!selectedArea}
                   >
-                    <option value="">
+                    <option value="" className="bg-secondary text-gray-400">
                       {selectedArea ? 'Choose Block...' : 'Select Area First'}
                     </option>
                     {availableBlocks.map((block) => (
-                      <option key={block} value={block}>
+                      <option key={block} value={block} className="bg-secondary text-white font-medium py-2">
                         {block}
                       </option>
                     ))}
