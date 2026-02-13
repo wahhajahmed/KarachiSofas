@@ -23,9 +23,9 @@ function ProductCard({ product, onAddToCart }) {
   return (
     <div className="card overflow-hidden flex flex-col hover:scale-105 transition-transform duration-300">
       <div className="relative h-48 sm:h-56 md:h-64 bg-gradient-to-br from-black via-secondary to-primary/30">
-        {product.image_url ? (
+        {(product.cover_image || product.image_url) ? (
           <Image
-            src={product.image_url}
+            src={product.cover_image || product.image_url}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

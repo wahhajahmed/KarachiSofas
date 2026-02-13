@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { supabase } from '../../lib/supabaseClient';
 import { useCart, useAuth } from '../_app';
+import ImageSlider from '../../components/ImageSlider';
 
 export default function ProductDetailPage() {
   const router = useRouter();
@@ -35,22 +35,12 @@ export default function ProductDetailPage() {
 
   return (
     <div className="grid md:grid-cols-2 gap-6 md:gap-8 px-4 md:px-0 py-6">
-      <div className="bg-secondary/60 border border-primary/40 rounded-xl overflow-hidden relative h-64 md:h-80 lg:h-96">
-        {product.image_url ? (
-          <Image
-            src={product.image_url}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
-            priority
-            quality={85}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
-            AUF Sofa Image
-          </div>
-        )}
+      <div className="bg-secondary/60 border border-primary/40 rounded-xl overflow-hidden p-4">
+        <ImageSlider
+          coverImage={product.cover_image || product.image_url}
+          images={product.images || []}
+          productName={product.name}
+        />
       </div>
       <div className="space-y-4 md:space-y-6">
         <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary">{product.name}</h1>

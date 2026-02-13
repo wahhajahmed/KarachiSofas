@@ -12,7 +12,9 @@ create table public.products (
   description text,
   price numeric not null,
   category_id uuid references public.categories(id) on delete set null,
-  image_url text,
+  image_url text, -- Legacy field, kept for backward compatibility
+  cover_image text, -- Main cover photo
+  images jsonb default '[]'::jsonb, -- Array of 4 additional images
   created_at timestamp with time zone default now()
 );
 

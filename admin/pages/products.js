@@ -43,7 +43,9 @@ export default function ProductsPage() {
         description: current.description,
         price: Number(current.price || 0),
         category_id: current.category_id || null,
-        image_url: current.image_url || null,
+        cover_image: current.coverImage || current.cover_image || null,
+        images: current.images || [],
+        image_url: current.coverImage || current.cover_image || null, // Backward compatibility
       };
       let query = supabase.from('products');
       if (current.id) {
@@ -122,10 +124,10 @@ export default function ProductsPage() {
                         className="p-3 bg-secondary border border-primary/30 rounded-lg space-y-2"
                       >
                         <div className="flex items-start gap-3">
-                          {prod.image_url && (
+                          {(prod.cover_image || prod.image_url) && (
                             <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-black/40 border border-primary/20">
                               <img
-                                src={prod.image_url}
+                                src={prod.cover_image || prod.image_url}
                                 alt={prod.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {

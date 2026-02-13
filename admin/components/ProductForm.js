@@ -1,7 +1,13 @@
+import ImageUpload from './ImageUpload';
+
 export default function ProductForm({ current, setCurrent, categories, onSubmit, loading }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCurrent({ ...current, [name]: value });
+  };
+
+  const handleImagesChange = (imageData) => {
+    setCurrent({ ...current, ...imageData });
   };
 
   return (
@@ -62,19 +68,11 @@ export default function ProductForm({ current, setCurrent, categories, onSubmit,
         </div>
       </div>
       
-      <div>
-        <label className="block text-sm font-medium text-gray-200 mb-2">Image URL</label>
-        <input
-          name="image_url"
-          value={current.image_url || ''}
-          onChange={handleChange}
-          placeholder="https://example.com/image.jpg"
-          className="w-full bg-black/40 border border-primary/40 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-        />
-        <p className="text-xs text-gray-400 mt-2">
-          Upload image to Supabase Storage or use external URL
-        </p>
-      </div>
+      <ImageUpload
+        onImagesChange={handleImagesChange}
+        existingCover={current.cover_image}
+        existingImages={current.images || []}
+      />
       
       <button
         type="submit"
