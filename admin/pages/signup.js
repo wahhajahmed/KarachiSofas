@@ -69,10 +69,13 @@ export default function AdminSignupPage() {
         return;
       }
 
+      // Generate a UUID for the new admin user
+      const userId = crypto.randomUUID();
+
       // Email is new – create a fresh admin account
       const { data, error: insertError } = await supabase
         .from('users')
-        .insert({ name: formattedName, email, password, role: 'admin' })
+        .insert({ id: userId, name: formattedName, email, password, role: 'admin' })
         .select('*')
         .single();
 
