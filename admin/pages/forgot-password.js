@@ -33,9 +33,15 @@ export default function ForgotPasswordPage() {
         .select('id, email, role')
         .eq('email', email)
         .eq('role', 'admin')
-        .single();
+        .maybeSingle();
 
-      if (fetchError || !data) {
+      if (fetchError) {
+        console.error('Database error:', fetchError);
+        setError(`Database error: ${fetchError.message}`);
+        return;
+      }
+
+      if (!data) {
         setError('Admin account not found with this email address.');
         return;
       }
