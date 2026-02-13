@@ -47,6 +47,7 @@ export default function ProductsPage() {
         cover_image: coverImageUrl,
         images: Array.isArray(current.images) ? current.images : [],
         image_url: coverImageUrl, // Backward compatibility
+        featured: current.featured || false,
       };
       let query = supabase.from('products');
       if (current.id) {
@@ -139,12 +140,15 @@ export default function ProductsPage() {
                           )}
                           <div className="flex-1 min-w-0">
                             <h3 className="text-white font-semibold text-sm md:text-base truncate">
-                              {prod.name}
+                              {prod.name} {prod.featured && <span className="text-yellow-400">⭐</span>}
                             </h3>
                             <p className="text-gray-400 text-xs">{cat?.name || 'Uncategorized'}</p>
                             <p className="text-primary font-semibold text-sm">
                               Rs {Number(prod.price).toLocaleString()}
                             </p>
+                            {prod.featured && (
+                              <p className="text-yellow-400 text-xs mt-1">Featured on Home Page</p>
+                            )}
                           </div>
                         </div>
                         <div className="flex gap-2">
