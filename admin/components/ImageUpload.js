@@ -1,23 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 export default function ImageUpload({ onImagesChange, existingCover, existingImages = [] }) {
-  const [coverPreview, setCoverPreview] = useState(existingCover || null);
-  const [imagePreviews, setImagePreviews] = useState(existingImages || []);
+  const [coverImage, setCoverImage] = useState(existingCover || null);
+  const [additionalImages, setAdditionalImages] = useState(existingImages || []);
   const [uploading, setUploading] = useState(false);
+
+  // Update local state when props change (for editing existing products)
+  useEffect(() => {
+    setCoverImage(existingCover || null);
+    setAdditionalImages(existingImages || []);
+  }, [existingCover, existingImages]);
 
   async function handleCoverUpload(e) {
     try {
       setUploading(true);
       const file = e.target.files[0];
       if (!file) return;
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
 
       // Upload to Supabase Storage
       const fileExt = file.name.split('.').pop();
@@ -38,34 +37,38 @@ export default function ImageUpload({ onImagesChange, existingCover, existingIma
         .from('product-images')
         .getPublicUrl(filePath);
 
-      onImagesChange({ cover_image: publicUrl, coverImage: publicUrl });
+      setCoverImage(publicUrl);
+      onImagesChange({ cover_image: publicUrl });
     } catch (error) {
       alert('Error uploading cover image: ' + error.message);
     } finally {
       setUploading(false);
+      e.target.value = ''; // Reset input
     }
+  }
+
+  function removeCoverImage() {
+    setCoverImage(null);
+    onImagesChange({ cover_image: null });
   }
 
   async function handleImagesUpload(e) {
     try {
       setUploading(true);
-      const files = Array.from(e.target.files).slice(0, 4); // Max 4 images
+      const files = Array.from(e.target.files);
       if (files.length === 0) return;
 
+      // Calculate how many images can still be uploaded
+      const remainingSlots = 4 - additionalImages.length;
+      const filesToUpload = files.slice(0, remainingSlots);
+
+      if (files.length > remainingSlots) {
+        alert(`You can only upload ${remainingSlots} more image(s). Limit is 4 images.`);
+      }
+
       const uploadedUrls = [];
-      const newPreviews = [];
 
-      for (const file of files) {
-        // Create preview
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          newPreviews.push(reader.result);
-          if (newPreviews.length === files.length) {
-            setImagePreviews([...imagePreviews, ...newPreviews].slice(0, 4));
-          }
-        };
-        reader.readAsDataURL(file);
-
+      for (const file of filesToUpload) {
         // Upload to Supabase Storage
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random()}.${fileExt}`;
@@ -88,101 +91,128 @@ export default function ImageUpload({ onImagesChange, existingCover, existingIma
         uploadedUrls.push(publicUrl);
       }
 
-      onImagesChange({ images: [...imagePreviews, ...uploadedUrls].slice(0, 4) });
+      const newImages = [...additionalImages, ...uploadedUrls];
+      setAdditionalImages(newImages);
+      onImagesChange({ images: newImages });
     } catch (error) {
       alert('Error uploading images: ' + error.message);
     } finally {
       setUploading(false);
+      e.target.value = ''; // Reset input
     }
   }
 
-  function removeImage(index) {
-    const newImages = imagePreviews.filter((_, i) => i !== index);
-    setImagePreviews(newImages);
+  function removeAdditionalImage(index) {
+    const newImages = additionalImages.filter((_, i) => i !== index);
+    setAdditionalImages(newImages);
     onImagesChange({ images: newImages });
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Cover Image Upload */}
-      <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">
-          Cover Photo (Main Image)
+      <div className="bg-black/20 border border-primary/30 rounded-lg p-4">
+        <label className="block text-sm font-medium text-gray-200 mb-3">
+          📸 Cover Photo (Main Image)
         </label>
-        <div className="space-y-2">
-          {coverPreview && (
-            <div className="relative w-full h-48 rounded-lg overflow-hidden bg-black/40 border border-primary/20">
+        
+        {coverImage ? (
+          <div className="space-y-3">
+            <div className="relative w-full h-64 rounded-lg overflow-hidden bg-black/40 border-2 border-primary/40">
               <img
-                src={coverPreview}
+                src={coverImage}
                 alt="Cover preview"
                 className="w-full h-full object-cover"
               />
-              <button
-                type="button"
-                onClick={() => {
-                  setCoverPreview(null);
-                  onImagesChange({ coverImage: null });
-                }}
-                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
-              >
-                Remove
-              </button>
+              <div className="absolute top-2 right-2">
+                <button
+                  type="button"
+                  onClick={removeCoverImage}
+                  disabled={uploading}
+                  className="bg-red-500/90 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                >
+                  🗑️ Remove
+                </button>
+              </div>
             </div>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleCoverUpload}
-            disabled={uploading}
-            className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-secondary hover:file:bg-primary/90 cursor-pointer"
-          />
-        </div>
-      </div>
-
-      {/* Additional Images Upload */}
-      <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">
-          Additional Images (Up to 4)
-        </label>
-        <div className="space-y-2">
-          {imagePreviews.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {imagePreviews.map((preview, index) => (
-                <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-black/40 border border-primary/20">
-                  <img
-                    src={preview}
-                    alt={`Preview ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-          {imagePreviews.length < 4 && (
+            <p className="text-xs text-green-400">✓ Cover photo uploaded</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
             <input
               type="file"
               accept="image/*"
-              multiple
-              onChange={handleImagesUpload}
+              onChange={handleCoverUpload}
               disabled={uploading}
-              className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary/80 file:text-secondary hover:file:bg-primary cursor-pointer"
+              className="w-full text-sm text-gray-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-secondary hover:file:bg-primary/90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             />
+            <p className="text-xs text-gray-400">Upload your main product image</p>
+          </div>
+        )}
+      </div>
+
+      {/* Additional Images Upload */}
+      <div className="bg-black/20 border border-primary/30 rounded-lg p-4">
+        <label className="block text-sm font-medium text-gray-200 mb-3">
+          🖼️ Additional Images (Maximum 4)
+        </label>
+        
+        {additionalImages.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            {additionalImages.map((imageUrl, index) => (
+              <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-black/40 border-2 border-primary/20 group">
+                <img
+                  src={imageUrl}
+                  alt={`Additional ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeAdditionalImage(index)}
+                  disabled={uploading}
+                  className="absolute top-1 right-1 bg-red-500/90 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-medium transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                >
+                  ✕
+                </button>
+                <div className="absolute bottom-1 left-1 bg-black/70 text-white px-2 py-0.5 rounded text-xs">
+                  {index + 1}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        <div className="space-y-2">
+          {additionalImages.length < 4 ? (
+            <>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImagesUpload}
+                disabled={uploading}
+                className="w-full text-sm text-gray-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/80 file:text-secondary hover:file:bg-primary cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              />
+              <p className="text-xs text-gray-400">
+                📊 {additionalImages.length} of 4 images uploaded • {4 - additionalImages.length} slot(s) remaining
+              </p>
+            </>
+          ) : (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
+              <p className="text-sm text-amber-400 font-medium">
+                ⚠️ Upload limit reached! You have uploaded 4 images. Delete an image to upload a new one.
+              </p>
+            </div>
           )}
-          <p className="text-xs text-gray-400">
-            {imagePreviews.length} of 4 images uploaded
-          </p>
         </div>
       </div>
 
       {uploading && (
-        <p className="text-sm text-primary animate-pulse">Uploading images...</p>
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+          <p className="text-sm text-blue-400 animate-pulse font-medium">
+            ⏳ Uploading images, please wait...
+          </p>
+        </div>
       )}
     </div>
   );

@@ -2,8 +2,8 @@ import ImageUpload from './ImageUpload';
 
 export default function ProductForm({ current, setCurrent, categories, onSubmit, loading }) {
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCurrent({ ...current, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setCurrent({ ...current, [name]: type === 'checkbox' ? checked : value });
   };
 
   const handleImagesChange = (imageData) => {
@@ -73,6 +73,20 @@ export default function ProductForm({ current, setCurrent, categories, onSubmit,
         existingCover={current.cover_image}
         existingImages={current.images || []}
       />
+      
+      <div className="flex items-center gap-3 bg-black/40 border border-primary/40 rounded-lg px-4 py-3">
+        <input
+          type="checkbox"
+          id="featured"
+          name="featured"
+          checked={current.featured || false}
+          onChange={handleChange}
+          className="w-5 h-5 rounded border-primary/40 bg-black/40 text-primary focus:ring-2 focus:ring-primary cursor-pointer"
+        />
+        <label htmlFor="featured" className="text-sm font-medium text-gray-200 cursor-pointer select-none">
+          ⭐ Feature on Home Page
+        </label>
+      </div>
       
       <button
         type="submit"

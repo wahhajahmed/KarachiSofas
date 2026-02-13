@@ -23,7 +23,7 @@ export default function HomePage({ initialCategories, initialFeatured }) {
         const { data: prods } = await supabase
           .from('products')
           .select('*')
-          .limit(8)
+          .eq('featured', true)
           .order('created_at', { ascending: false });
         setCategories(cats || []);
         setFeatured(prods || []);
@@ -101,7 +101,7 @@ export async function getServerSideProps() {
     const { data: prods } = await supabase
       .from('products')
       .select('*')
-      .limit(8)
+      .eq('featured', true)
       .order('created_at', { ascending: false });
 
     return {
