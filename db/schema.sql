@@ -18,7 +18,7 @@ create table public.products (
 
 -- Users table - id matches Supabase Auth user ID
 create table public.users (
-  id uuid primary key, -- This will match auth.users.id from Supabase Auth
+  id uuid primary key default gen_random_uuid(), -- Auto-generate UUID
   name text,
   email text unique not null,
   password text, -- Password for admin accounts
