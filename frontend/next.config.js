@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'bqifhhlnyovcqzhuggdo.supabase.co',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
@@ -26,7 +30,6 @@ const nextConfig = {
   },
   // Enable experimental optimizations
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['@supabase/supabase-js'],
   },
   // Performance optimizations
