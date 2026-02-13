@@ -121,7 +121,19 @@ export default function ProductsPage() {
                         key={prod.id}
                         className="p-3 bg-secondary border border-primary/30 rounded-lg space-y-2"
                       >
-                        <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start gap-3">
+                          {prod.image_url && (
+                            <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-black/40 border border-primary/20">
+                              <img
+                                src={prod.image_url}
+                                alt={prod.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                            </div>
+                          )}
                           <div className="flex-1 min-w-0">
                             <h3 className="text-white font-semibold text-sm md:text-base truncate">
                               {prod.name}
