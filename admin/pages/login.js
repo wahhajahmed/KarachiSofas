@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { supabase, checkSupabaseConnection } from '../lib/supabaseClient';
 import { useAdminAuth } from '../context/AdminAuthContext';
 
@@ -111,9 +112,9 @@ export default function AdminLoginPage() {
           </div>
           
           <div className="flex items-center justify-end mb-4">
-            <a href="/forgot-password" className="text-sm text-primary hover:underline">
+            <Link href="/forgot-password" className="text-sm text-primary hover:underline">
               Forgot Password?
-            </a>
+            </Link>
           </div>
 
           <button
@@ -127,9 +128,9 @@ export default function AdminLoginPage() {
         
         <p className="text-center text-sm text-gray-400 mt-6">
           Don&apos;t have an account?{' '}
-          <a href="/signup" className="text-primary hover:underline">
+          <Link href="/signup" className="text-primary hover:underline">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
