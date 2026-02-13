@@ -3,31 +3,35 @@ import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
 import CategoryCard from '../components/CategoryCard';
 import ProductCard from '../components/ProductCard';
+import { ProductCardSkeleton, CategoryCardSkeleton } from '../components/LoadingSkeleton';
 import { useCart, useAuth } from './_app';
 
-export default function HomePage() {
-  const [categories, setCategories] = useState([]);
-  const [featured, setFeatured] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function HomePage({ initialCategories, initialFeatured }) {
+  const [categories, setCategories] = useState(initialCategories || []);
+  const [featured, setFeatured] = useState(initialFeatured || []);
+  const [loading, setLoading] = useState(false);
   const { addToCart } = useCart();
   const { user } = useAuth() || {};
   const router = useRouter();
 
+  // Only re-fetch if initial data is empty
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      const { data: cats } = await supabase.from('categories').select('*').order('created_at');
-      const { data: prods } = await supabase
-        .from('products')
-        .select('*')
-        .limit(8)
-        .order('created_at', { ascending: false });
-      setCategories(cats || []);
-      setFeatured(prods || []);
-      setLoading(false);
+    if (!initialCategories || !initialFeatured) {
+      async function loadData() {
+        setLoading(true);
+        const { data: cats } = await supabase.from('categories').select('*').order('created_at');
+        const { data: prods } = await supabase
+          .from('products')
+          .select('*')
+          .limit(8)
+          .order('created_at', { ascending: false });
+        setCategories(cats || []);
+        setFeatured(prods || []);
+        setLoading(false);
+      }
+      loadData();
     }
-    loadData();
-  }, []);
+  }, [initialCategories, initialFeatured]);
 
   return (
     <div className="space-y-12 md:space-y-16 py-6 md:py-8 px-4 md:px-0">
@@ -46,7 +50,11 @@ export default function HomePage() {
           <h2 className="section-subtitle">Shop by Category</h2>
         </div>
         {loading && !categories.length ? (
-          <p className="text-base sm:text-lg text-gray-300">Loading categories…</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {[...Array(3)].map((_, i) => (
+              <CategoryCardSkeleton key={i} />
+            ))}
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {categories.map((c) => (
@@ -61,7 +69,11 @@ export default function HomePage() {
           <h2 className="section-subtitle">Featured Products</h2>
         </div>
         {loading && !featured.length ? (
-          <p className="text-base sm:text-lg text-gray-300">Loading products…</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+            {[...Array(8)].map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
             {featured.map((p) => (
@@ -76,4 +88,35 @@ export default function HomePage() {
       </section>
     </div>
   );
+}
+
+// Server-side rendering for initial data load
+export async function getServerSideProps() {
+  try {
+    const { data: cats } = await supabase
+      .from('categories')
+      .select('*')
+      .order('created_at');
+    
+    const { data: prods } = await supabase
+      .from('products')
+      .select('*')
+      .limit(8)
+      .order('created_at', { ascending: false });
+
+    return {
+      props: {
+        initialCategories: cats || [],
+        initialFeatured: prods || [],
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching initial data:', error);
+    return {
+      props: {
+        initialCategories: [],
+        initialFeatured: [],
+      },
+    };
+  }
 }

@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { memo } from 'react';
 import { useAuth } from '../pages/_app';
 
-export default function ProductCard({ product, onAddToCart }) {
+function ProductCard({ product, onAddToCart }) {
   const router = useRouter();
   const { user } = useAuth() || {};
 
@@ -22,11 +24,14 @@ export default function ProductCard({ product, onAddToCart }) {
     <div className="card overflow-hidden flex flex-col hover:scale-105 transition-transform duration-300">
       <div className="relative h-48 sm:h-56 md:h-64 bg-gradient-to-br from-black via-secondary to-primary/30">
         {product.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={product.image_url}
             alt={product.name}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover"
+            loading="lazy"
+            quality={75}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm md:text-base">
@@ -59,3 +64,5 @@ export default function ProductCard({ product, onAddToCart }) {
     </div>
   );
 }
+
+export default memo(ProductCard);

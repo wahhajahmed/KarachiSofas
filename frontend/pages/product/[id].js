@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { supabase } from '../../lib/supabaseClient';
 import { useCart, useAuth } from '../_app';
 
@@ -34,16 +35,19 @@ export default function ProductDetailPage() {
 
   return (
     <div className="grid md:grid-cols-2 gap-6 md:gap-8 px-4 md:px-0 py-6">
-      <div className="bg-secondary/60 border border-primary/40 rounded-xl overflow-hidden">
+      <div className="bg-secondary/60 border border-primary/40 rounded-xl overflow-hidden relative h-64 md:h-80 lg:h-96">
         {product.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={product.image_url}
             alt={product.name}
-            className="w-full h-64 md:h-80 lg:h-96 object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            priority
+            quality={85}
           />
         ) : (
-          <div className="w-full h-64 md:h-80 lg:h-96 flex items-center justify-center text-gray-500 text-sm">
+          <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
             AUF Sofa Image
           </div>
         )}

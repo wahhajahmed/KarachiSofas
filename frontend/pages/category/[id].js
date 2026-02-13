@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import ProductCard from '../../components/ProductCard';
+import { ProductCardSkeleton } from '../../components/LoadingSkeleton';
 import { useCart, useAuth } from '../_app';
 
 export default function CategoryPage() {
@@ -38,7 +39,11 @@ export default function CategoryPage() {
         {category ? category.name : 'Category'}
       </h1>
       {loading && !products.length ? (
-        <p className="text-sm text-gray-300">Loading products…</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
       ) : products.length ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {products.map((p) => (

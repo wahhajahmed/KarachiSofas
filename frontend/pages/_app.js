@@ -1,9 +1,15 @@
 ﻿import '../styles/globals.css';
 import { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 import { supabase } from '../lib/supabaseClient';
+
+// Lazy load Footer for better initial page load
+const Footer = dynamic(() => import('../components/Footer'), {
+  loading: () => null,
+});
 
 // Simple cart context for frontend only
 const CartContext = createContext();
@@ -371,6 +377,11 @@ function MyApp({ Component, pageProps }) {
   return (
     <AuthContext.Provider value={{ user, setUser: setAndPersistUser, logout }}>
       <CartContext.Provider value={value}>
+        <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        </Head>
         <div className="min-h-screen flex flex-col bg-gradient-to-b from-black via-secondary to-black">
           {!isAuthPage && <Header />}
           <main className={isAuthPage ? "flex-1 flex items-center justify-center py-12" : "flex-1 container-max py-8"}>

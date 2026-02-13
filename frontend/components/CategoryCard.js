@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import { memo } from 'react';
 
-export default function CategoryCard({ category }) {
+function CategoryCard({ category }) {
   return (
     <Link href={`/category/${category.id}`} className="block group">
       <div className="card p-5 sm:p-6 md:p-8 hover:border-primary hover:scale-105 transition-all duration-300 h-full">
@@ -10,3 +11,5 @@ export default function CategoryCard({ category }) {
     </Link>
   );
 }
+
+export default memo(CategoryCard);
