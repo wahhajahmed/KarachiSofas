@@ -86,7 +86,7 @@ export default function ProductsPage() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-secondary to-black">
       <Sidebar />
-      <main className="flex-1 p-4 md:p-6 lg:p-8 md:ml-64">
+      <main className="flex-1 p-4 md:p-6 lg:p-8 md:ml-64 pt-16 md:pt-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             <div className="lg:col-span-2 bg-secondary/70 border border-primary/40 rounded-xl p-4 md:p-6 shadow-xl">

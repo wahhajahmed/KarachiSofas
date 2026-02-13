@@ -110,7 +110,7 @@ export default function DeliveryChargesPage() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-secondary to-black">
       <Sidebar />
-      <main className="flex-1 p-4 md:p-6 lg:p-8 md:ml-64">
+      <main className="flex-1 p-4 md:p-6 lg:p-8 md:ml-64 pt-16 md:pt-6">
         <div className="max-w-6xl mx-auto space-y-6">
           <h1 className="text-2xl md:text-3xl font-bold text-primary mb-6">
             Manage Delivery Charges

@@ -75,7 +75,7 @@ export default function CategoriesPage() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-black via-secondary to-black">
       <Sidebar />
-      <main className="flex-1 p-4 md:p-6 lg:p-8 md:ml-64">
+      <main className="flex-1 p-4 md:p-6 lg:p-8 md:ml-64 pt-16 md:pt-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div className="bg-secondary/70 border border-primary/40 rounded-xl p-4 md:p-6 shadow-xl">

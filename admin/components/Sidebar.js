@@ -12,6 +12,11 @@ export default function Sidebar() {
   const { pendingCount } = useOrders();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Don't show sidebar if user is not logged in
+  if (!adminUser) {
+    return null;
+  }
+
   function handleLogout() {
     logout();
     router.push('/login');
