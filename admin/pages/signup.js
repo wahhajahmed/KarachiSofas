@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { supabase, checkSupabaseConnection } from '../lib/supabaseClient';
 import { useAdminAuth } from '../context/AdminAuthContext';
 
@@ -8,10 +9,12 @@ export default function AdminSignupPage() {
   const { setAdminUser } = useAdminAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const formatName = (rawName) => {
     if (!rawName) return '';
@@ -25,6 +28,7 @@ export default function AdminSignupPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
+    setSuccess(false);
     setLoading(true);
     try {
       // Check Supabase connection first
@@ -48,6 +52,7 @@ export default function AdminSignupPage() {
 
       const formattedName = formatName(name);
 
+      // Check if email already exists in users or pending_admins
       const {
         data: existing,
         error: existingError,
@@ -63,26 +68,42 @@ export default function AdminSignupPage() {
         return;
       }
 
-      // If any account already exists with this email, block signup
       if (existing) {
-        setError('Admin account already exists. Please login.');
+        setError('An account with this email already exists. Please login.');
         return;
       }
 
-      // Email is new – create a fresh admin account (Supabase will auto-generate UUID)
-      const { data, error: insertError } = await supabase
-        .from('users')
-        .insert({ name: formattedName, email, password, role: 'admin' })
+      // Check pending admins
+      const { data: pending } = await supabase
+        .from('pending_admins')
         .select('*')
-        .single();
+        .eq('email', email)
+        .limit(1)
+        .maybeSingle();
+
+      if (pending) {
+        setError('A request with this email is already pending approval.');
+        return;
+      }
+
+      // Create pending admin request (requires approval)
+      const { error: insertError } = await supabase
+        .from('pending_admins')
+        .insert({ 
+          name: formattedName, 
+          email, 
+          password,
+          phone: phone || null,
+          status: 'pending'
+        });
 
       if (insertError) {
-        setError(insertError.message || 'Failed to create admin account.');
+        setError(insertError.message || 'Failed to submit admin request.');
         return;
       }
 
-      setAdminUser(data);
-      router.push('/');
+      setSuccess(true);
+      // Don't auto-login, show success message
     } finally {
       setLoading(false);
     }
@@ -100,6 +121,12 @@ export default function AdminSignupPage() {
           <p className="text-sm text-red-300 mb-4 p-3 bg-red-500/20 rounded">{error}</p>
         )}
         
+        {success && (
+          <div className="text-sm text-green-300 mb-4 p-3 bg-green-500/20 border border-green-500/30 rounded">
+            ✓ Your admin request has been submitted successfully! Please wait for approval from existing admins (Ahsan Rauf or Faiza Ahsan). You will be able to login once your account is approved.
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block mb-2 text-gray-200 text-sm font-medium">Full Name</label>
@@ -109,6 +136,7 @@ export default function AdminSignupPage() {
               placeholder="John Doe"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              disabled={success}
             />
           </div>
           
@@ -120,6 +148,19 @@ export default function AdminSignupPage() {
               placeholder="admin@aufkarachisofas.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={success}
+            />
+          </div>
+          
+          <div>
+            <label className="block mb-2 text-gray-200 text-sm font-medium">Phone Number (optional)</label>
+            <input
+              type="tel"
+              className="w-full rounded-lg bg-black/40 border border-primary/30 px-4 py-3 text-white placeholder-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all"
+              placeholder="03XX-XXXXXXX"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              disabled={success}
             />
           </div>
           
@@ -132,6 +173,7 @@ export default function AdminSignupPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={success}
               />
               <button
                 type="button"
@@ -156,18 +198,18 @@ export default function AdminSignupPage() {
           
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || success}
             className="w-full btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating Account...' : 'Sign Up'}
+            {loading ? 'Submitting Request...' : success ? 'Request Submitted' : 'Submit Admin Request'}
           </button>
         </form>
         
         <p className="text-center text-sm text-gray-400 mt-6">
           Already have an account?{' '}
-          <a href="/login" className="text-primary hover:underline">
+          <Link href="/login" className="text-primary hover:underline">
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>

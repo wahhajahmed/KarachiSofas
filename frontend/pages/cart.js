@@ -20,8 +20,7 @@ export default function CartPage() {
         <div className="flex justify-end">
           <Link 
             href="/checkout" 
-            className="btn-primary w-full sm:w-auto text-center"
-            style={{ color: '#0b1a2b' }}
+            className="btn-primary w-full sm:w-auto text-center px-6 py-3 sm:px-8 sm:py-3"
           >
             Proceed to Checkout
           </Link>

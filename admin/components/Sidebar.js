@@ -28,6 +28,7 @@ export default function Sidebar() {
     { href: '/products', label: 'Products' },
     { href: '/orders', label: 'Orders', badge: pendingCount },
     { href: '/delivery-charges', label: 'Delivery Charges' },
+    { href: '/pending-admins', label: 'Pending Admins' },
   ];
 
   return (

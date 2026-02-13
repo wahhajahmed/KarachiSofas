@@ -214,8 +214,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start px-4 md:px-0">
-      <div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start px-4 md:px-6 lg:px-8 xl:px-0 py-6">
+      <div className="order-2 lg:order-1">
         <h1 className="text-xl sm:text-2xl font-bold text-primary mb-4">Checkout</h1>
         {/* Cart items display - simplified for checkout */}
         <div className="space-y-4">
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-      <form onSubmit={handlePlaceOrder} className="bg-secondary/60 border border-primary/40 rounded-xl p-5 sm:p-6 md:p-8 space-y-4 sm:space-y-5">
+      <form onSubmit={handlePlaceOrder} className="bg-secondary/60 border border-primary/40 rounded-xl p-5 sm:p-6 md:p-8 space-y-4 sm:space-y-5 order-1 lg:order-2">
         <h2 className="text-xl sm:text-2xl font-semibold text-primary mb-3 sm:mb-4">Customer Details</h2>
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-300">Full Name</label>
