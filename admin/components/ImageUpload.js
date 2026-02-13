@@ -38,7 +38,7 @@ export default function ImageUpload({ onImagesChange, existingCover, existingIma
         .from('product-images')
         .getPublicUrl(filePath);
 
-      onImagesChange({ coverImage: publicUrl });
+      onImagesChange({ cover_image: publicUrl, coverImage: publicUrl });
     } catch (error) {
       alert('Error uploading cover image: ' + error.message);
     } finally {

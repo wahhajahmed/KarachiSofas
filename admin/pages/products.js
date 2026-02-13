@@ -38,14 +38,15 @@ export default function ProductsPage() {
     setMessage('');
     setErrorMessage('');
     try {
+      const coverImageUrl = current.cover_image || current.coverImage || null;
       const payload = {
         name: current.name,
         description: current.description,
         price: Number(current.price || 0),
         category_id: current.category_id || null,
-        cover_image: current.coverImage || current.cover_image || null,
-        images: current.images || [],
-        image_url: current.coverImage || current.cover_image || null, // Backward compatibility
+        cover_image: coverImageUrl,
+        images: Array.isArray(current.images) ? current.images : [],
+        image_url: coverImageUrl, // Backward compatibility
       };
       let query = supabase.from('products');
       if (current.id) {
