@@ -32,7 +32,7 @@ export default function AdminSignupPage() {
         checkSupabaseConnection();
       } catch (err) {
         setError('Database connection failed. Please contact administrator.');
-        console.error('Supabase connection error:', err);
+        console.error('Supabase connection error: - signup.js:35', err);
         return;
       }
 
@@ -163,60 +163,6 @@ export default function AdminSignupPage() {
           </a>
         </p>
       </div>
-    </div>
-  );
-}
-        <div>
-          <label className="block mb-1 text-gray-200">Full Name</label>
-          <input
-            type="text"
-            className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block mb-1 text-gray-200">Email</label>
-          <input
-            type="email"
-            className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block mb-1 text-gray-200">Password</label>
-          <div className="flex items-center space-x-2">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              className="w-full rounded-md bg-black/40 border border-primary/30 px-3 py-2 text-sm outline-none focus:border-primary"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              className="text-[11px] text-gray-300 hover:text-primary"
-            >
-              {showPassword ? 'Hide' : 'Show'}
-            </button>
-          </div>
-          <p className="mt-1 text-[11px] text-gray-400">
-            Password must be at least 8 characters.
-          </p>
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full btn-primary mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Creating account…' : 'Sign Up'}
-        </button>
-        <p className="text-[11px] text-gray-300 mt-2">
-          Already have an admin account?{' '}
-          <a href="/login" className="text-primary hover:text-primary-dark">Login</a>
-        </p>
-      </form>
     </div>
   );
 }

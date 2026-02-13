@@ -192,33 +192,21 @@ export default function ProductsPage() {
                 >
                   Edit
                 </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(p.id)}
-                  className="text-red-400 hover:text-red-300"
-                >
-                  Delete
-                </button>
-              </div>
+                        <button
+                          onClick={() => handleDelete(prod.id)}
+                          className="flex-1 bg-red-500/20 text-red-300 px-3 py-1.5 rounded hover:bg-red-500/30 text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
-          ))}
-          {!products.length && (
-            <p className="text-sm text-gray-300">No products yet.</p>
-          )}
+          </div>
         </div>
-      </div>
-      <div>
-        <h2 className="text-lg font-semibold text-primary mb-2">
-          {current.id ? 'Edit Product' : 'Add Product'}
-        </h2>
-        <ProductForm
-          product={current}
-          categories={categories}
-          onChange={setCurrent}
-          onSubmit={handleSubmit}
-          loading={loading}
-        />
-      </div>
+      </main>
     </div>
   );
 }
