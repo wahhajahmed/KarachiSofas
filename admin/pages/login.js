@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../lib/supabaseClient';
+import { supabase, checkSupabaseConnection } from '../lib/supabaseClient';
 import { useAdminAuth } from '../context/AdminAuthContext';
 
 export default function AdminLoginPage() {
@@ -17,6 +17,15 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
     try {
+      // Check Supabase connection first
+      try {
+        checkSupabaseConnection();
+      } catch (err) {
+        setError('Database connection failed. Please contact administrator.');
+        console.error('Supabase connection error:', err);
+        return;
+      }
+
       if (!email || !password) {
         setError('Please enter email and password.');
         return;
