@@ -28,10 +28,29 @@ a {
   @apply text-primary hover:text-primary-dark transition-colors duration-200;
 }
 
+/* Override link colors when used with btn-primary */
+a.btn-primary {
+  color: #0b1a2b !important;
+  text-decoration: none !important;
+}
+
+a.btn-primary:hover {
+  color: #0b1a2b !important;
+}
+
+a.btn-primary:active {
+  color: #0b1a2b !important;
+}
+
+a.btn-primary:visited {
+  color: #0b1a2b !important;
+}
+
 .btn-primary {
   @apply bg-primary px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-200 shadow-md hover:shadow-lg text-base select-none;
   -webkit-tap-highlight-color: transparent;
   color: #0b1a2b !important; /* Dark navy text - always visible on gold background */
+  display: inline-block;
 }
 
 .btn-primary:focus {
