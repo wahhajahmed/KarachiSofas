@@ -34,12 +34,13 @@ a {
 }
 
 .btn-primary:focus {
-  @apply outline-none;
+  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-secondary;
 }
 
 .btn-primary:active {
-  @apply scale-95 outline-none;
+  @apply outline-none;
   -webkit-tap-highlight-color: transparent;
+  transform: translateY(1px);
 }
 
 .btn-secondary {
