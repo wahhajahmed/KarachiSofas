@@ -21,6 +21,7 @@ create table public.users (
   id uuid primary key, -- This will match auth.users.id from Supabase Auth
   name text,
   email text unique not null,
+  password text, -- Password for admin accounts
   phone text,
   role text not null default 'user' check (role in ('user','admin')),
   created_at timestamp with time zone default now()
