@@ -18,7 +18,11 @@ export default function CartPage() {
       />
       {hasItems && (
         <div className="flex justify-end">
-          <Link href="/checkout" className="btn-primary w-full sm:w-auto text-center">
+          <Link 
+            href="/checkout" 
+            className="btn-primary w-full sm:w-auto text-center"
+            style={{ color: '#0b1a2b' }}
+          >
             Proceed to Checkout
           </Link>
         </div>

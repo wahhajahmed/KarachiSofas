@@ -1,52 +1,58 @@
-export default function ProductForm({ product, categories, onChange, onSubmit, loading }) {
+export default function ProductForm({ current, setCurrent, categories, onSubmit, loading }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    onChange({ ...product, [name]: value });
+    setCurrent({ ...current, [name]: value });
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3 text-sm">
+    <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-xs text-gray-300 mb-1">Name</label>
+        <label className="block text-sm font-medium text-gray-200 mb-2">Product Name</label>
         <input
           name="name"
-          value={product.name || ''}
+          value={current.name || ''}
           onChange={handleChange}
           required
-          className="w-full bg-black/40 border border-primary/40 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+          placeholder="Enter product name"
+          className="w-full bg-black/40 border border-primary/40 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
         />
       </div>
+      
       <div>
-        <label className="block text-xs text-gray-300 mb-1">Description</label>
+        <label className="block text-sm font-medium text-gray-200 mb-2">Description</label>
         <textarea
           name="description"
-          value={product.description || ''}
+          value={current.description || ''}
           onChange={handleChange}
           rows={3}
-          className="w-full bg-black/40 border border-primary/40 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+          placeholder="Product description..."
+          className="w-full bg-black/40 border border-primary/40 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
         />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs text-gray-300 mb-1">Price (PKR)</label>
+          <label className="block text-sm font-medium text-gray-200 mb-2">Price (PKR)</label>
           <input
             type="number"
             name="price"
             min="0"
             step="0.01"
-            value={product.price || ''}
+            value={current.price || ''}
             onChange={handleChange}
             required
-            className="w-full bg-black/40 border border-primary/40 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="0"
+            className="w-full bg-black/40 border border-primary/40 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
           />
         </div>
+        
         <div>
-          <label className="block text-xs text-gray-300 mb-1">Category</label>
+          <label className="block text-sm font-medium text-gray-200 mb-2">Category</label>
           <select
             name="category_id"
-            value={product.category_id || ''}
+            value={current.category_id || ''}
             onChange={handleChange}
-            className="w-full bg-black/40 border border-primary/40 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full bg-black/40 border border-primary/40 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary transition-all"
           >
             <option value="">Select category</option>
             {categories.map((c) => (
@@ -55,25 +61,27 @@ export default function ProductForm({ product, categories, onChange, onSubmit, l
           </select>
         </div>
       </div>
+      
       <div>
-        <label className="block text-xs text-gray-300 mb-1">Image URL</label>
+        <label className="block text-sm font-medium text-gray-200 mb-2">Image URL</label>
         <input
           name="image_url"
-          value={product.image_url || ''}
+          value={current.image_url || ''}
           onChange={handleChange}
-          placeholder="https://..."
-          className="w-full bg-black/40 border border-primary/40 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+          placeholder="https://example.com/image.jpg"
+          className="w-full bg-black/40 border border-primary/40 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
         />
-        <p className="text-[10px] text-gray-400 mt-1">
-          For production, you can integrate Supabase Storage or another image service.
+        <p className="text-xs text-gray-400 mt-2">
+          Upload image to Supabase Storage or use external URL
         </p>
       </div>
+      
       <button
         type="submit"
         disabled={loading}
-        className="btn-primary mt-1 w-full disabled:opacity-60 disabled:cursor-not-allowed"
+        className="btn-primary w-full py-3 disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {loading ? 'Saving…' : 'Save Product'}
+        {loading ? 'Saving…' : current.id ? 'Update Product' : 'Add Product'}
       </button>
     </form>
   );

@@ -1,14 +1,27 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
+import { useAdminAuth } from '../context/AdminAuthContext';
+import Sidebar from '../components/Sidebar';
 import ProductForm from '../components/ProductForm';
 
 export default function ProductsPage() {
+  const router = useRouter();
+  const { adminUser } = useAdminAuth();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [current, setCurrent] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (!adminUser) {
+      router.push('/login');
+      return;
+    }
+    load();
+  }, [adminUser, router]);
 
   async function load() {
     const [{ data: prods }, { data: cats }] = await Promise.all([
@@ -18,10 +31,6 @@ export default function ProductsPage() {
     setProducts(prods || []);
     setCategories(cats || []);
   }
-
-  useEffect(() => {
-    load();
-  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -51,7 +60,6 @@ export default function ProductsPage() {
       setMessage('Product saved successfully.');
       load();
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error(err);
     } finally {
       setLoading(false);
@@ -71,13 +79,85 @@ export default function ProductsPage() {
     }
   }
 
+  if (!adminUser) {
+    return null;
+  }
+
   return (
-    <div className="grid lg:grid-cols-3 gap-8">
-      <div className="lg:col-span-2">
-        <h1 className="text-xl font-semibold text-primary mb-4">Products</h1>
-        {message && (
-          <p className="text-xs text-emerald-300 mb-2">{message}</p>
-        )}
+    <div className="flex min-h-screen bg-gradient-to-br from-black via-secondary to-black">
+      <Sidebar />
+      <main className="flex-1 p-4 md:p-6 lg:p-8 md:ml-64">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="lg:col-span-2 bg-secondary/70 border border-primary/40 rounded-xl p-4 md:p-6 shadow-xl">
+              <h1 className="text-xl md:text-2xl font-semibold text-primary mb-4">
+                {current.id ? 'Edit Product' : 'Add Product'}
+              </h1>
+              {message && (
+                <p className="text-sm text-emerald-300 mb-3 p-2 bg-emerald-500/20 rounded">{message}</p>
+              )}
+              {errorMessage && (
+                <p className="text-sm text-red-300 mb-3 p-2 bg-red-500/20 rounded">{errorMessage}</p>
+              )}
+              <ProductForm
+                current={current}
+                setCurrent={setCurrent}
+                categories={categories}
+                onSubmit={handleSubmit}
+                loading={loading}
+              />
+            </div>
+
+            <div className="bg-secondary/70 border border-primary/40 rounded-xl p-4 md:p-6 shadow-xl">
+              <h2 className="text-xl md:text-2xl font-semibold text-primary mb-4">All Products</h2>
+              <div className="space-y-2 max-h-[600px] overflow-y-auto">
+                {products.length === 0 ? (
+                  <p className="text-gray-400 text-sm">No products yet</p>
+                ) : (
+                  products.map((prod) => {
+                    const cat = categories.find((c) => c.id === prod.category_id);
+                    return (
+                      <div
+                        key={prod.id}
+                        className="p-3 bg-secondary border border-primary/30 rounded-lg space-y-2"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-white font-semibold text-sm md:text-base truncate">
+                              {prod.name}
+                            </h3>
+                            <p className="text-gray-400 text-xs">{cat?.name || 'Uncategorized'}</p>
+                            <p className="text-primary font-semibold text-sm">
+                              Rs {Number(prod.price).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setCurrent(prod)}
+                            className="flex-1 btn-primary text-sm px-3 py-1.5"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(prod.id)}
+                            className="flex-1 bg-red-500/20 text-red-300 px-3 py-1.5 rounded hover:bg-red-500/30 text-sm"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
         {errorMessage && (
           <p className="text-xs text-red-300 mb-2">Error: {errorMessage}</p>
         )}
