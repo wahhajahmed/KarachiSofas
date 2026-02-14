@@ -32,15 +32,14 @@ export default function DeliveryChargesPage() {
     
     if (data) {
       setExistingCharges(data);
-      const saved = new Set(data.map(item => `${item.area}`));
+      // Store the full area names (e.g., "Abbas Town - Sector 1")
+      const saved = new Set(data.map(item => item.area));
       setSavedBlocks(saved);
     }
   }
 
   const currentArea = karachiAreas.find(a => a.name === selectedArea);
-  const availableBlocks = currentArea?.blocks.filter(
-    block => !savedBlocks.has(`${selectedArea} - ${block}`)
-  ) || [];
+  const availableBlocks = currentArea?.blocks || [];
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -74,7 +73,7 @@ export default function DeliveryChargesPage() {
       }
     } else {
       setMessage('✓ Delivery charges saved successfully!');
-      setSavedBlocks(prev => new Set([...prev, fullAreaName]));
+      setSelectedArea('');
       setSelectedBlock('');
       setAmount('');
       await fetchExistingCharges();
@@ -94,11 +93,6 @@ export default function DeliveryChargesPage() {
       setMessage('Failed to delete delivery charges');
     } else {
       setMessage('✓ Delivery charges deleted');
-      setSavedBlocks(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(area);
-        return newSet;
-      });
       await fetchExistingCharges();
     }
   }
@@ -165,8 +159,8 @@ export default function DeliveryChargesPage() {
                     ))}
                   </select>
                   {selectedArea && availableBlocks.length === 0 && (
-                    <p className="text-xs text-gray-400 mt-1">
-                      All blocks for this area have been configured
+                    <p className="text-xs text-yellow-400 mt-1">
+                      No blocks available for this area
                     </p>
                   )}
                 </div>
