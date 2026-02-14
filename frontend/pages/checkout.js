@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCart, useAuth } from './_app';
 import CartSummary from '../components/CartSummary';
 import { supabase } from '../lib/supabaseClient';
+import { karachiAreas } from '../lib/karachiAreas';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -14,7 +15,8 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [area, setArea] = useState('');
+  const [selectedArea, setSelectedArea] = useState('');
+  const [selectedBlock, setSelectedBlock] = useState('');
   const [landmark, setLandmark] = useState('');
   const [placing, setPlacing] = useState(false);
   const [message, setMessage] = useState('');
@@ -35,20 +37,22 @@ export default function CheckoutPage() {
     setPhone((prev) => prev || user.phone || '');
   }, [user]);
 
-  // Fetch delivery charges when area changes
+  // Fetch delivery charges when area and block change
   useEffect(() => {
     async function fetchDeliveryCharges() {
-      if (!area || area.trim().length === 0) {
+      if (!selectedArea || !selectedBlock) {
         setDeliveryCharges(0);
         return;
       }
 
       try {
-        // Try exact match first
-        let { data, error } = await supabase
+        const fullAreaName = `${selectedArea} - ${selectedBlock}`;
+        
+        // Try to find exact match
+        const { data, error } = await supabase
           .from('delivery_charges')
           .select('charges')
-          .ilike('area', area.trim())
+          .eq('area', fullAreaName)
           .maybeSingle();
 
         if (error) {
@@ -58,14 +62,8 @@ export default function CheckoutPage() {
         if (data) {
           setDeliveryCharges(Number(data.charges));
         } else {
-          // If no exact match, get "Other Areas" charges
-          const { data: otherData } = await supabase
-            .from('delivery_charges')
-            .select('charges')
-            .eq('area', 'Other Areas')
-            .maybeSingle();
-          
-          setDeliveryCharges(otherData ? Number(otherData.charges) : 0);
+          // If no exact match, set to 0 or you can set a default
+          setDeliveryCharges(0);
         }
       } catch (err) {
         console.error('Error:', err);
@@ -73,13 +71,8 @@ export default function CheckoutPage() {
       }
     }
 
-    // Debounce the API call
-    const timer = setTimeout(() => {
-      fetchDeliveryCharges();
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [area]);
+    fetchDeliveryCharges();
+  }, [selectedArea, selectedBlock]);
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const grandTotal = total + deliveryCharges;
@@ -166,8 +159,14 @@ export default function CheckoutPage() {
     }
 
     // Validate area field
-    if (!area || area.trim().length === 0) {
-      setMessage('Area/City is required.');
+    if (!selectedArea || selectedArea.trim().length === 0) {
+      setMessage('Please select your area.');
+      return;
+    }
+
+    // Validate block field
+    if (!selectedBlock || selectedBlock.trim().length === 0) {
+      setMessage('Please select your block.');
       return;
     }
 
@@ -313,25 +312,54 @@ export default function CheckoutPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-300">Area</label>
-            <input
-              value={area}
-              onChange={(e) => setArea(e.target.value)}
-              placeholder="e.g. Gulshan-e-Iqbal, DHA"
+            <label className="block text-sm font-medium text-gray-300">Area *</label>
+            <select
+              value={selectedArea}
+              onChange={(e) => {
+                setSelectedArea(e.target.value);
+                setSelectedBlock(''); // Reset block when area changes
+              }}
               className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
               required
-            />
+            >
+              <option value="">Select Area</option>
+              {karachiAreas.map((area) => (
+                <option key={area.name} value={area.name}>
+                  {area.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-300">Nearest Landmark</label>
-            <input
-              value={landmark}
-              onChange={(e) => setLandmark(e.target.value)}
-              placeholder="e.g. near XYZ Mall"
-              className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            <label className="block text-sm font-medium text-gray-300">Block *</label>
+            <select
+              value={selectedBlock}
+              onChange={(e) => setSelectedBlock(e.target.value)}
+              disabled={!selectedArea}
+              className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
               required
-            />
+            >
+              <option value="">Select Block</option>
+              {selectedArea &&
+                karachiAreas
+                  .find((area) => area.name === selectedArea)
+                  ?.blocks.map((block) => (
+                    <option key={block} value={block}>
+                      {block}
+                    </option>
+                  ))}
+            </select>
           </div>
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-300">Nearest Landmark</label>
+          <input
+            value={landmark}
+            onChange={(e) => setLandmark(e.target.value)}
+            placeholder="e.g. near XYZ Mall"
+            className="w-full rounded-md bg-black/40 border border-primary/40 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
         </div>
         <div className="space-y-3">
           <p className="text-sm font-medium text-gray-300">Payment Method</p>
