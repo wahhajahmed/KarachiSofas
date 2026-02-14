@@ -54,7 +54,7 @@ export default function SignupPage() {
 
       // Validate phone field
       if (!phone) {
-        setError('Phone number is required for WhatsApp verification.');
+        setError('Phone number is required.');
         return;
       }
 
@@ -82,46 +82,62 @@ export default function SignupPage() {
 
       const formattedName = formatName(name);
 
-      // Check if user already exists
-      const { data: existingUser } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', email)
-        .maybeSingle();
+      // Use Supabase Auth for signup
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: formattedName,
+            phone,
+          }
+        }
+      });
 
-      if (existingUser) {
-        setError('An account with this email already exists. Please login instead.');
+      if (authError) {
+        // Provide specific error messages
+        if (authError.message.includes('User already registered')) {
+          setError('An account with this email already exists. Please login instead.');
+        } else if (authError.message.includes('Password should be at least')) {
+          setError('Password must be at least 8 characters long.');
+        } else if (authError.message.includes('invalid email')) {
+          setError('Please enter a valid email address.');
+        } else {
+          setError(authError.message || 'Failed to create account. Please try again.');
+        }
         return;
       }
 
-      // Generate 6-digit OTP
-      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiresAt = new Date(Date.now() + 60000).toISOString(); // 60 seconds
+      // Store additional user data in users table
+      if (authData.user) {
+        const { error: dbError } = await supabase
+          .from('users')
+          .insert({
+            id: authData.user.id, // Use the auth user ID
+            name: formattedName,
+            email,
+            phone,
+            role: 'user',
+          });
 
-      // Store OTP and user data temporarily
-      const { error: otpError } = await supabase
-        .from('otp_verifications')
-        .insert({
-          phone,
-          otp_code: otpCode,
-          expires_at: expiresAt,
-          name: formattedName,
-          email,
-          password
-        });
-
-      if (otpError) {
-        console.error('OTP error:', otpError);
-        setError('Failed to send verification code. Please try again.');
-        return;
+        if (dbError) {
+          if (dbError.code === '23505') {
+            // Duplicate key error - user already exists, which is fine
+            console.log('User record already exists');
+          } else {
+            console.error('Error saving user data:', dbError);
+            setError('Account created but failed to save user details. Please contact support.');
+            return;
+          }
+        }
       }
 
-      // NOTE: In production, integrate with WhatsApp Business API to send OTP
-      // For now, we'll just log it and redirect to verification page
-      console.log(`WhatsApp OTP for ${phone}: ${otpCode}`);
+      setSuccess(true);
       
-      // Redirect to OTP verification page with phone number
-      router.push(`/verify-otp?phone=${encodeURIComponent(phone)}`);
+      // Redirect to login page after 2 seconds
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
     } finally {
       setLoading(false);
     }
@@ -160,7 +176,7 @@ export default function SignupPage() {
           />
         </div>
         <div>
-          <label className="block mb-2 text-gray-200 font-medium">Phone Number (WhatsApp)</label>
+          <label className="block mb-2 text-gray-200 font-medium">Phone Number</label>
           <input
             type="tel"
             className="input-field"
@@ -169,7 +185,6 @@ export default function SignupPage() {
             onChange={(e) => setPhone(e.target.value)}
             disabled={success}
           />
-          <p className="text-xs text-gray-400 mt-1">We will send a verification code via WhatsApp</p>
         </div>
         <div>
           <label className="block mb-2 text-gray-200 font-medium">Password</label>

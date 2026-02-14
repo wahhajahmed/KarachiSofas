@@ -1,7 +1,9 @@
 -- Migration: User cleanup and admin setup
 -- Run this in Supabase SQL Editor
 
--- Step 1: Delete ALL existing users (clean slate)
+-- Step 1: Delete all related data first, then users (clean slate)
+DELETE FROM public.cart_items;
+DELETE FROM public.orders;
 DELETE FROM public.users;
 
 -- Step 2: Add approved status column to users table for admin approval system
@@ -17,13 +19,7 @@ UPDATE public.users SET approved = true WHERE role = 'user';
 INSERT INTO public.users (name, email, password, phone, role, approved)
 VALUES 
   ('Ahsan Rauf', 'ahsanrauf2@gmail.com', '@AhsanRauf2026', NULL, 'admin', true),
-  ('Faiza Ahsan', 'faizaahsan2@gmail.com', '@FaizaAhsan2026', NULL, 'admin', true)
-ON CONFLICT (email) DO UPDATE 
-SET 
-  name = EXCLUDED.name,
-  password = EXCLUDED.password,
-  role = EXCLUDED.role,
-  approved = EXCLUDED.approved;
+  ('Faiza Ahsan', 'faizaahsan2@gmail.com', '@FaizaAhsan2026', NULL, 'admin', true);
 
 -- Step 4: Create OTP verification table for user signups
 CREATE TABLE IF NOT EXISTS public.otp_verifications (
