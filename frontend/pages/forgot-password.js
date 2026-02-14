@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { supabase } from '../lib/supabaseClient';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -74,53 +73,59 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <>
-      <Header />
-      <div className="min-h-screen bg-gradient-to-br from-black via-secondary to-black flex items-center justify-center p-4 pt-24">
-        <div className="max-w-md w-full bg-secondary/70 border border-primary/40 rounded-xl p-6 md:p-8 shadow-2xl">
-          <div className="text-center mb-6">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-2">Forgot Password</h1>
-            <p className="text-gray-400 text-xs sm:text-sm">Reset your account password</p>
+    <div className="min-h-screen bg-gradient-to-br from-black via-secondary to-black flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-secondary/70 border border-primary/40 rounded-xl p-6 sm:p-8 md:p-10 shadow-2xl">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <div className="text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary tracking-wider">AUF</h2>
+            <p className="text-xs text-gray-400 uppercase tracking-widest">Ali Usman Fatima</p>
+          </div>
+        </div>
+
+        <div className="text-center mb-6">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-2">Forgot Password</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Reset your account password</p>
+        </div>
+
+        {message && (
+          <div className="text-sm text-green-300 mb-4 p-3 sm:p-4 bg-green-500/10 rounded-lg border border-green-500/30">
+            {message}
+          </div>
+        )}
+        
+        {error && (
+          <div className="text-sm text-red-300 mb-4 p-3 sm:p-4 bg-red-500/10 rounded-lg border border-red-500/30">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+          <div>
+            <label className="block mb-2 text-gray-200 text-sm font-medium">Email Address</label>
+            <input
+              type="email"
+              className="w-full rounded-lg bg-black/40 border border-primary/30 px-4 py-3 text-white placeholder-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all text-sm sm:text-base"
+              placeholder="your.email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              required
+            />
           </div>
 
-          {message && (
-            <div className="text-sm text-green-300 mb-4 p-3 bg-green-500/20 rounded border border-green-500/30">
-              {message}
-            </div>
-          )}
-          
-          {error && (
-            <div className="text-sm text-red-300 mb-4 p-3 bg-red-500/20 rounded border border-red-500/30">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block mb-2 text-gray-200 text-sm font-medium">Email Address</label>
+          <div>
+            <label className="block mb-2 text-gray-200 text-sm font-medium">New Password</label>
+            <div className="relative">
               <input
-                type="email"
-                className="w-full rounded-lg bg-black/40 border border-primary/30 px-4 py-3 text-white placeholder-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all"
-                placeholder="your.email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type={showNewPassword ? 'text' : 'password'}
+                className="w-full rounded-lg bg-black/40 border border-primary/30 px-4 py-3 pr-12 text-white placeholder-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all text-sm sm:text-base"
+                placeholder="••••••••"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 disabled={loading}
                 required
               />
-            </div>
-
-            <div>
-              <label className="block mb-2 text-gray-200 text-sm font-medium">New Password</label>
-              <div className="relative">
-                <input
-                  type={showNewPassword ? 'text' : 'password'}
-                  className="w-full rounded-lg bg-black/40 border border-primary/30 px-4 py-3 pr-12 text-white placeholder-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all"
-                  placeholder="••••••••"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  disabled={loading}
-                  required
-                />
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
@@ -146,7 +151,7 @@ export default function ForgotPasswordPage() {
               <div className="relative">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
-                  className="w-full rounded-lg bg-black/40 border border-primary/30 px-4 py-3 pr-12 text-white placeholder-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all"
+                  className="w-full rounded-lg bg-black/40 border border-primary/30 px-4 py-3 pr-12 text-white placeholder-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all text-sm sm:text-base"
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -172,26 +177,24 @@ export default function ForgotPasswordPage() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Resetting Password...' : 'Reset Password'}
-            </button>
-          </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full btn-primary py-3 sm:py-3.5 text-sm sm:text-base font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            {loading ? 'Resetting Password...' : 'Reset Password'}
+          </button>
+        </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-400">
-              Remember your password?{' '}
-              <a href="/login" className="text-primary hover:underline">
-                Back to Login
-              </a>
-            </p>
-          </div>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-400">
+            Remember your password?{' '}
+            <Link href="/login" className="text-primary hover:underline font-medium transition-colors">
+              Back to Login
+            </Link>
+          </p>
         </div>
       </div>
-      <Footer />
-    </>
+    </div>
   );
 }
