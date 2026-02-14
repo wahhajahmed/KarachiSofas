@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { supabase } from '../lib/supabaseClient';
 
 export default function SignupPage() {
@@ -144,56 +145,74 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto card p-6 sm:p-8 md:p-10 shadow-2xl">
-      <h1 className="text-3xl sm:text-4xl font-bold text-primary mb-6 sm:mb-8">Create Your AUF Account</h1>
-      {error && <p className="text-sm sm:text-base text-red-300 mb-4 sm:mb-6 p-3 sm:p-4 bg-red-500/10 border border-red-500/30 rounded-lg">{error}</p>}
-      {success && (
-        <div className="text-sm sm:text-base text-green-300 mb-4 sm:mb-6 p-3 sm:p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-          ✓ Account created successfully! Redirecting to login page...
+    <div className="w-full max-w-md mx-auto px-4">
+      {/* Logo Section */}
+      <div className="text-center mb-8">
+        <div className="inline-block">
+          <div className="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent mb-2">
+            AUF
+          </div>
+          <div className="text-xs sm:text-sm text-gray-400 tracking-wider">
+            Ali Usman Fatima
+          </div>
         </div>
-      )}
-      <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6 text-sm sm:text-base">
-        <div>
-          <label className="block mb-2 text-gray-200 font-medium">Full Name</label>
-          <input
-            type="text"
-            className="input-field"
-            placeholder="Your full name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            disabled={success}
-          />
-        </div>
-        <div>
-          <label className="block mb-2 text-gray-200 font-medium">Email</label>
-          <input
-            type="email"
-            className="input-field"
-            placeholder="your@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={success}
-          />
-        </div>
-        <div>
-          <label className="block mb-2 text-gray-200 font-medium">Phone Number</label>
-          <input
-            type="tel"
-            className="input-field"
-            placeholder="03XX-XXXXXXX"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            disabled={success}
-          />
-        </div>
-        <div>
-          <label className="block mb-2 text-gray-200 font-medium">Password</label>
-          <div className="relative">
+      </div>
+
+      {/* Signup Card */}
+      <div className="card p-6 sm:p-8 shadow-2xl">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 mb-6">Create Your Account</h1>
+        {error && (
+          <p className="text-sm text-red-300 mb-5 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+            {error}
+          </p>
+        )}
+        {success && (
+          <div className="text-sm text-green-300 mb-5 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+            ✓ Account created successfully! Redirecting to login page...
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block mb-2 text-sm text-gray-200 font-medium">Full Name</label>
             <input
-              type={showPassword ? 'text' : 'password'}
-              className="input-field pr-12"
-              placeholder="Enter your password"
-              value={password}
+              type="text"
+              className="input-field text-sm sm:text-base"
+              placeholder="Your full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={success}
+            />
+          </div>
+          <div>
+            <label className="block mb-2 text-sm text-gray-200 font-medium">Email</label>
+            <input
+              type="email"
+              className="input-field text-sm sm:text-base"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={success}
+            />
+          </div>
+          <div>
+            <label className="block mb-2 text-sm text-gray-200 font-medium">Phone Number</label>
+            <input
+              type="tel"
+              className="input-field text-sm sm:text-base"
+              placeholder="03XX-XXXXXXX"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              disabled={success}
+            />
+          </div>
+          <div>
+            <label className="block mb-2 text-sm text-gray-200 font-medium">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className="input-field pr-12 text-sm sm:text-base"
+                placeholder="Enter your password"
+                value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={success}
             />
@@ -216,22 +235,25 @@ export default function SignupPage() {
               )}
             </button>
           </div>
-          <p className="mt-2 text-xs sm:text-sm text-gray-400">
+          <p className="mt-2 text-xs text-gray-400">
             Password must be at least 8 characters.
           </p>
         </div>
         <button
           type="submit"
           disabled={loading || success}
-          className="w-full btn-primary mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full btn-primary py-3 font-medium disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? 'Creating account…' : success ? 'Account Created!' : 'Sign Up'}
         </button>
-        <p className="text-xs sm:text-sm text-gray-300 mt-4 text-center">
+        <p className="text-sm text-gray-300 mt-5 text-center">
           Already have an account?{' '}
-          <a href="/login" className="text-primary hover:text-primary-dark transition-colors font-semibold">Login</a>
+          <Link href="/login" className="text-primary hover:text-primary-dark transition-colors font-semibold">
+            Login
+          </Link>
         </p>
       </form>
+      </div>
     </div>
   );
 }
