@@ -126,12 +126,12 @@ export default function DeliveryChargesPage() {
                       setSelectedArea(e.target.value);
                       setSelectedBlock('');
                     }}
-                    className="w-full rounded-lg bg-black/60 border-2 border-primary/50 px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-white transition-all"
+                    className="w-full rounded-lg bg-black/60 border-2 border-primary/50 px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-white transition-all appearance-auto"
                     required
                   >
-                    <option value="" className="bg-secondary text-gray-400">Choose Area...</option>
+                    <option value="">Choose Area...</option>
                     {karachiAreas.map((area) => (
-                      <option key={area.name} value={area.name} className="bg-secondary text-white font-medium py-2">
+                      <option key={area.name} value={area.name}>
                         {area.name}
                       </option>
                     ))}
@@ -145,15 +145,15 @@ export default function DeliveryChargesPage() {
                   <select
                     value={selectedBlock}
                     onChange={(e) => setSelectedBlock(e.target.value)}
-                    className="w-full rounded-lg bg-black/60 border-2 border-primary/50 px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-white transition-all"
+                    className="w-full rounded-lg bg-black/60 border-2 border-primary/50 px-4 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-white transition-all appearance-auto disabled:opacity-50 disabled:cursor-not-allowed"
                     required
                     disabled={!selectedArea}
                   >
-                    <option value="" className="bg-secondary text-gray-400">
+                    <option value="">
                       {selectedArea ? 'Choose Block...' : 'Select Area First'}
                     </option>
                     {availableBlocks.map((block) => (
-                      <option key={block} value={block} className="bg-secondary text-white font-medium py-2">
+                      <option key={block} value={block}>
                         {block}
                       </option>
                     ))}
