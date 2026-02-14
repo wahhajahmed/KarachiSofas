@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useCart, useAuth } from '../pages/_app';
 
 export default function Header() {
@@ -8,6 +9,7 @@ export default function Header() {
   const { cart } = useCart() || { cart: [] };
   const auth = useAuth() || {};
   const user = auth.user;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (path) => router.pathname === path;
   const isAuthActive = router.pathname === '/login' || router.pathname === '/signup';
@@ -45,8 +47,8 @@ export default function Header() {
             </div>
           )}
 
-          {/* Navigation - Right */}
-          <nav className="flex items-center space-x-4 sm:space-x-6 text-sm font-medium">
+          {/* Desktop Navigation - Right */}
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
             <Link
               href="/"
               className={
@@ -103,6 +105,94 @@ export default function Header() {
               </Link>
             )}
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-gray-200 hover:text-primary p-2"
+            aria-label="Toggle menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-primary/20 pt-4 space-y-3">
+            {user && (
+              <div className="text-sm text-gray-200 font-medium pb-2 border-b border-primary/20">
+                Hi, {user.name}
+              </div>
+            )}
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`block py-2 px-3 rounded ${
+                isActive('/')
+                  ? 'bg-primary/20 text-primary font-semibold'
+                  : 'text-gray-200 hover:bg-primary/10'
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              href="/cart"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`block py-2 px-3 rounded ${
+                isActive('/cart')
+                  ? 'bg-primary/20 text-primary font-semibold'
+                  : 'text-gray-200 hover:bg-primary/10'
+              }`}
+            >
+              <span className="flex items-center justify-between">
+                <span>Cart</span>
+                {cartCount > 0 && (
+                  <span className="inline-flex items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white px-2 py-0.5 min-w-[20px]">
+                    {cartCount}
+                  </span>
+                )}
+              </span>
+            </Link>
+            <Link
+              href="/checkout"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`block py-2 px-3 rounded ${
+                isActive('/checkout')
+                  ? 'bg-primary/20 text-primary font-semibold'
+                  : 'text-gray-200 hover:bg-primary/10'
+              }`}
+            >
+              Checkout
+            </Link>
+            {user ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  auth.logout?.();
+                }}
+                className="block w-full text-left py-2 px-3 rounded text-gray-200 hover:bg-primary/10"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block py-2 px-3 rounded ${
+                  isAuthActive
+                    ? 'bg-primary/20 text-primary font-semibold'
+                    : 'text-gray-200 hover:bg-primary/10'
+                }`}
+              >
+                Account
+              </Link>
+            )}
+          </div>
+        )}
         </div>
       </div>
     </header>
